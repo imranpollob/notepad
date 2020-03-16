@@ -5,8 +5,16 @@
 @section('content')
     <form action="/{{ Request::path() }}" method="post">
         @csrf
-        <textarea name="data" rows="5" cols="40">{{ $note->data }}</textarea>
-        <input type="text" name="title" value="{{ $note->title }}" placeholder="Optional Title">
+
+        <div class="form-group">
+            <textarea name="data" class="form-control" id="data" rows="15" placeholder="Just dump data!!">{{ $note->data }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <input type="text" name="title" class="form-control" id="title" value="{{ $note->title }}"
+                   placeholder="Optional Title">
+        </div>
+
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 @endsection
