@@ -25,3 +25,4 @@ Route::get('/callback/{provider}', 'SocialController@callback');
 
 Route::get('{url}', 'NotesController@index');
 Route::post('{url}', 'NotesController@store');
+Route::delete('{url}', 'NotesController@destroy');

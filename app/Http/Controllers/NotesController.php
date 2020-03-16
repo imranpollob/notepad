@@ -95,11 +95,14 @@ class NotesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Notes $notes
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Notes $notes)
+    public function destroy(Request $request)
     {
-        //
+        Notes::where('url', $request->path())
+            ->delete();
+
+        return redirect('/notes');
     }
 }
