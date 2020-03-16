@@ -15,21 +15,26 @@
             <input type="text" name="title" class="form-control" id="title" value="{{ $note->title }}"
                    placeholder="Optional Title">
         </div>
-
-        <button type="submit" id="submit" class="btn btn-primary">Submit</button>
     </form>
 @endsection
 
 @section('javascript')
     <script>
-
         $(document).ready(function () {
 
-            $('#submit').click(function (e) {
-                e.preventDefault();
+            //setup before functions
+            let typingTimer;                //timer identifier
+            let doneTypingInterval = 2000;  //time in ms (5 seconds)
 
-                console.log('df')
+            //on keyup, start the countdown
+            $('#data').keyup(function () {
+                clearTimeout(typingTimer);
 
+                typingTimer = setTimeout(doneTyping, doneTypingInterval);
+            });
+
+            //user is "finished typing," do something
+            function doneTyping() {
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -39,17 +44,10 @@
                 $.ajax({
                     url: '/{{ Request::path() }}',
                     type: "POST",
-                    data: $('#note_form').serialize(),
-                    success: function (response) {
-
-                        // console.log(response)
-                        //
-                        // setTimeout(function(){
-                        //
-                        // },10000);
-                    }
+                    data: $('#note_form').serialize()
                 });
-            });
+            }
+
         });
 
     </script>
