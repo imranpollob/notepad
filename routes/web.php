@@ -20,5 +20,8 @@ Auth::routes();
 
 Route::get('/notes', 'HomeController@notes')->name('home')->middleware('auth');
 
+Route::get('/auth/redirect/{provider}', 'SocialController@redirect');
+Route::get('/callback/{provider}', 'SocialController@callback');
+
 Route::get('{url}', 'NotesController@index');
 Route::post('{url}', 'NotesController@store');
