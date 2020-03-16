@@ -28,8 +28,8 @@
             let doneTypingInterval = 2000;  //time in ms (5 seconds)
 
             //on keyup, start the countdown
-            $('#data').keyup(function () {
-                $('#save-status').text('');
+            $('#data, #title').keyup(function () {
+                $('#save-status').text('Saving ...');
                 clearTimeout(typingTimer);
 
                 typingTimer = setTimeout(doneTyping, doneTypingInterval);
