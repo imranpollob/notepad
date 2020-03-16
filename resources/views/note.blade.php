@@ -3,7 +3,7 @@
 @section('title', 'Page Title')
 
 @section('content')
-    <form action="/{{ Request::path() }}" method="post" id="note_form">
+    <form action="/{{ Request::path() }}" method="post" id="note-form">
         @csrf
 
         <div class="form-group">
@@ -16,6 +16,7 @@
                    placeholder="Optional Title">
         </div>
     </form>
+    <div id="save-status" class="badge badge-success"></div>
 @endsection
 
 @section('javascript')
@@ -28,6 +29,7 @@
 
             //on keyup, start the countdown
             $('#data').keyup(function () {
+                $('#save-status').text('');
                 clearTimeout(typingTimer);
 
                 typingTimer = setTimeout(doneTyping, doneTypingInterval);
@@ -44,7 +46,11 @@
                 $.ajax({
                     url: '/{{ Request::path() }}',
                     type: "POST",
-                    data: $('#note_form').serialize()
+                    data: $('#note-form').serialize(),
+                    success: function (response) {
+                        console.log('saved');
+                        $('#save-status').text('Saved');
+                    }
                 });
             }
 
