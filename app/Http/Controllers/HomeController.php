@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Notes;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function notes()
     {
-        return view('welcome');
+        return view('home', ['notes' => Notes::where('owner_id', Auth::id())->get()]);
     }
 
     public function newNote()

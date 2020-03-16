@@ -16,5 +16,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', 'HomeController@newNote');
 Route::post('/', 'HomeController@newNote');
 
+Auth::routes();
+
+Route::get('/notes', 'HomeController@notes')->name('home')->middleware('auth');
+
 Route::get('{url}', 'NotesController@index');
 Route::post('{url}', 'NotesController@store');

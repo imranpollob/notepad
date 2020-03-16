@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Notes;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class NotesController extends Controller
@@ -19,7 +20,10 @@ class NotesController extends Controller
         $note = Notes::where('url', $url)->first();
 
         if (!$note) {
-            Notes::create(['url' => $url]);
+            Notes::create([
+                'url' => $url,
+                'owner_id' => Auth::id() ?? null
+            ]);
 
             return redirect($url);
         }
