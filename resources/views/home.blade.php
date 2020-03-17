@@ -12,19 +12,19 @@
             <table class="table table-bordered table-striped table-hover">
                 <thead>
                 <tr>
-                    <th scope="col">Note</th>
-                    <th scope="col">Delete</th>
+                    <th>Note</th>
+                    <th style="width: 30%">Delete</th>
                 </tr>
                 </thead>
                 <tbody>
                 @foreach($notes as $note)
                     <tr>
-                        <td><a href="/{{ $note->url }}" target="_blank">{{ $note->url }}</a></td>
+                        <td><a href="/{{ $note->url }}" target="_blank">{{ $note->title ?? $note->url }}</a></td>
                         <td>
                             <form action="/{{ $note->url }}" method="post">
                                 @method('delete')
                                 @csrf
-                                <button type="submit" class="btn btn-danger">Delete Note</button>
+                                <button type="submit" class="btn btn-danger btn-sm">&times;</button>
                             </form>
                         </td>
                     </tr>

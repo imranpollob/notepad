@@ -55,7 +55,7 @@
                         @endif
                     @else
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('home') }}">My Notes</a>
+                            <a class="nav-link" href="{{ route('notes') }}">My Notes</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"

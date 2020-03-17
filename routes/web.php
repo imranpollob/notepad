@@ -13,12 +13,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', 'HomeController@newNote');
+Route::get('/', 'HomeController@newNote')->name('home');
 Route::post('/', 'HomeController@newNote');
 
 Auth::routes();
 
-Route::get('/notes', 'HomeController@notes')->middleware('auth');
+Route::get('/notes', 'HomeController@notes')->middleware('auth')->name('notes');
 
 Route::get('/auth/redirect/{provider}', 'SocialController@redirect');
 Route::get('/callback/{provider}', 'SocialController@callback');
