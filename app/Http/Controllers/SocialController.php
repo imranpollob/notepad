@@ -21,7 +21,7 @@ class SocialController extends Controller
 
         auth()->login($user);
 
-        return redirect()->to('/home');
+        return redirect('/#');
     }
 
     private function createUser($getInfo, $provider)
