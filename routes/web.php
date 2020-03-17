@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', 'HomeController@newNote')->name('home');
 Route::post('/', 'HomeController@newNote');
 
-Auth::routes();
+Auth::routes(['register' => false]);
 
 Route::get('/notes', 'HomeController@notes')->middleware('auth')->name('notes');
 
