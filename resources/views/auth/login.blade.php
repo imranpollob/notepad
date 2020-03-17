@@ -68,9 +68,13 @@
                         <hr>
 
                         <div class="form-group row mb-0">
-                            <div class="col-md-8 offset-md-4">
-                                <a href="{{ url('/auth/redirect/google') }}" class="btn btn-primary"><i class="fa fa-google"></i> Google</a>
+                            <div class="col-md-12 text-center social-login-text">
+                                Login with social account
+                            </div>
+                            <div class="col-md-12 text-center">
+                                <a href="{{ url('/auth/redirect/google') }}" class="btn btn-outline-danger"><i class="fa fa-google"></i> Google</a>
                                 <a href="{{ url('/auth/redirect/facebook') }}" class="btn btn-primary"><i class="fa fa-facebook"></i> Facebook</a>
+                                <a href="{{ url('/auth/redirect/github') }}" class="btn btn-secondary"><i class="fa fa-github"></i> GitHub</a>
                             </div>
                         </div>
                     </form>
