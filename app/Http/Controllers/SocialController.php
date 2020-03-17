@@ -17,7 +17,11 @@ class SocialController extends Controller
     {
         $getInfo = Socialite::driver($provider)->stateless()->user();
 
-        $user = $this->createUser($getInfo, $provider);
+        $user = User::where('email', $getInfo->email)->first();
+
+        if (!$user) {
+            $user = $this->createUser($getInfo, $provider);
+        }
 
         auth()->login($user);
 
