@@ -22,7 +22,7 @@
 <body>
 <div id="app">
     <nav class="navbar navbar-expand navbar-light bg-white shadow-sm">
-        <div class="container">
+        <div class="container py-4">
             <a class="navbar-brand" href="{{ url('/') }}">
                 <button class="btn btn-outline-primary">New Note</button>
             </a>
