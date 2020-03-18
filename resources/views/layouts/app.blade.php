@@ -74,6 +74,8 @@
     <main class="container py-4">
         @yield('content')
     </main>
+
+    <input type="hidden" id="hiddenInput">
 </div>
 
 <script
