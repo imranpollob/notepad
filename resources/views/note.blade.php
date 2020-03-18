@@ -15,7 +15,12 @@
         </div>
     </form>
 
-    <div id="save-status" class="badge badge-success"></div>
+    <div class="bottom-panel">
+        <div id="save-status" class="badge badge-success">Start Typing</div>
+        <button type="button" class="btn btn-primary btn-sm copyToClipboard"
+                title="Copy link to clipboard"><i class="fa fa-copy"></i> Copy link to clipboard
+        </button>
+    </div>
 
     <div class="site-info text-muted">
         <h1>Notepad online is a free tool for storing and sharing you notes.</h1>
@@ -23,6 +28,8 @@
         <h2>Registration benefits: view all created notes</h2>
         @endguest
     </div>
+
+    <input type="text" id="myInput">
 @endsection
 
 @section('javascript')
@@ -59,6 +66,17 @@
                     }
                 });
             }
+
+            $('.copyToClipboard').click(function (event) {
+                let text = window.location.href;
+
+                const copyTextInput = $("#myInput");
+                copyTextInput.show();
+                copyTextInput.val(text);
+                copyTextInput.select();
+                document.execCommand("copy");
+                copyTextInput.hide();
+            })
 
         });
 

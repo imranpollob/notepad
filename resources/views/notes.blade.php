@@ -21,7 +21,8 @@
                 <tbody>
                 @foreach($notes as $note)
                     <tr>
-                        <td><a href="/{{ $note->url }}" target="_blank" class="note-url">{{ $note->title ?? $note->url }}</a></td>
+                        <td><a href="/{{ $note->url }}" target="_blank"
+                               class="note-url">{{ $note->title ?? $note->url }}</a></td>
                         <td class="d-flex action-buttons">
                             <form action="/{{ $note->url }}" method="post">
                                 @method('delete')
@@ -31,7 +32,8 @@
                                 </button>
                             </form>
                             <button type="button" class="btn btn-primary btn-sm copyToClipboard"
-                                    title="Copy link to clipboard"><i class="fa fa-copy"></i> Copy link to clipboard</button>
+                                    title="Copy link to clipboard"><i class="fa fa-copy"></i> Copy link to clipboard
+                            </button>
 
                         </td>
                     </tr>
@@ -39,15 +41,15 @@
                 </tbody>
             </table>
 
-            <input type="text" id="myInput" >
+            <input type="text" id="myInput">
         </div>
     </div>
 @endsection
 
 @section('javascript')
     <script>
-
         $(document).ready(function () {
+
             $('.copyToClipboard').click(function (event) {
                 let text = window.location.origin + $(this).parent().siblings().find('a').attr('href');
 
@@ -58,6 +60,7 @@
                 document.execCommand("copy");
                 copyTextInput.hide();
             })
+
         });
     </script>
 @endsection
