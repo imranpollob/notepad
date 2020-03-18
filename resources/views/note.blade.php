@@ -19,7 +19,9 @@
 
     <div class="site-info text-muted">
         <h1>Notepad online is a free tool for storing and sharing you notes.</h1>
+        @guest
         <h2>Registration benefits: password protected note, view all created notes</h2>
+        @endguest
     </div>
 @endsection
 
