@@ -1,3 +1,18 @@
 .social-login-text {
     padding-bottom: 20px;
 }
+
+.user-note-heading {
+    padding: 20px;
+    font-weight: 400;
+}
+
+.site-info {
+    margin-top: 50px;
+}
+
+.site-info h1,
+.site-info h2 {
+    font-size: 14px;
+    text-align: center;
+}

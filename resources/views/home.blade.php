@@ -9,6 +9,8 @@
                 </div>
             @endif
 
+            <h3 class="user-note-heading">{{ Auth::user()->name }}'s Notes</h3>
+
             <table class="table table-bordered table-striped table-hover">
                 <thead>
                 <tr>

@@ -16,6 +16,11 @@
     </form>
 
     <div id="save-status" class="badge badge-success"></div>
+
+    <div class="site-info text-muted">
+        <h1>Notepad online is a free tool for storing and sharing you notes.</h1>
+        <h2>Registration benefits: password protected note, view all created notes</h2>
+    </div>
 @endsection
 
 @section('javascript')
