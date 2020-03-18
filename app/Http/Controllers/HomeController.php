@@ -11,7 +11,7 @@ class HomeController extends Controller
 {
     public function notes()
     {
-        return view('home', ['notes' => Notes::where('owner_id', Auth::id())->get()]);
+        return view('notes', ['notes' => Notes::where('owner_id', Auth::id())->latest()->get()]);
     }
 
     public function newNote()

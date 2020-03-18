@@ -20,6 +20,13 @@ class NotesController extends Controller
         $note = Notes::where('url', $url)->first();
 
         if (!$note) {
+
+            $new_url = preg_replace("/[^a-zA-Z0-9]+/", '', $url);
+
+            if ($new_url !== $url) {
+                return redirect($new_url);
+            }
+
             Notes::create([
                 'url' => $url,
                 'owner_id' => Auth::id() ?? null

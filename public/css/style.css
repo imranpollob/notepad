@@ -16,3 +16,7 @@
     font-size: 14px;
     text-align: center;
 }
+
+.action-buttons button{
+    margin-right: 10px;
+}
