@@ -17,19 +17,52 @@
 
     <div class="bottom-panel">
         <div id="save-status" class="badge badge-success">Start Typing</div>
-        <button type="button" class="btn btn-primary btn-sm copyToClipboard"
-                title="Copy link to clipboard"><i class="fa fa-copy"></i> Copy link to clipboard
-        </button>
+        <div>
+            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-key"></i> Password</button>
+            <button type="button" class="btn btn-primary btn-sm copyToClipboard"
+                    title="Copy link to clipboard"><i class="fa fa-copy"></i> Copy link to clipboard
+            </button>
+        </div>
     </div>
 
     <div class="site-info text-muted">
         <h1>Notepad online is a free tool for storing and sharing you notes.</h1>
         @guest
-        <h2>Registration benefits: view all created notes</h2>
+            <h2>Registration benefits: view all created notes</h2>
         @endguest
     </div>
 
     <input type="text" id="myInput">
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Password Management</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <form action="/{{ Request::path() }}/" method="post" id="note-form">
+                        @method('put')
+                        @csrf
+
+                        <div class="form-group">
+                            <input type="password" name="password" class="form-control" id="password"
+                                   placeholder="Give a password" value="{{ $note->password }}">
+                        </div>
+
+                        <button type="submit" name="update-password" class="btn btn-warning">Add or Update Password</button>
+                        <button type="submit" name="delete-password" class="btn btn-success">Remove Password</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('javascript')

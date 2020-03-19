@@ -91,12 +91,25 @@ class NotesController extends Controller
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \App\Notes $notes
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Notes $notes)
+    public function update(Request $request)
     {
-        //
+        if ($request->has('update-password')) {
+            Notes::where('url', $request->path())
+                ->update([
+                    'password' => $request->password,
+                ]);
+        }
+
+        if ($request->has('delete-password')) {
+            Notes::where('url', $request->path())
+                ->update([
+                    'password' => null,
+                ]);
+        }
+
+        return redirect($request->url());
     }
 
     /**
