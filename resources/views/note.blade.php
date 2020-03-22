@@ -92,7 +92,7 @@
 
                 $.ajax({
                     url: '/{{ Request::path() }}',
-                    type: "POST",
+                    type: "PUT",
                     data: $('#note-form').serialize(),
                     success: function () {
                         $('#save-status').text('Saved');
