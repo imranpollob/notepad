@@ -40,8 +40,10 @@ class NotesController extends Controller
             return redirect($url);
         }
 
-        if ($note->password && session('note_password') !== $note->password) {
-            return view('password');
+        if ($note->password) {
+            if (!session('note_password') || session('note_password') !== $note->password) {
+                return view('password');
+            }
         }
 
         return view('note', ['note' => $note]);
