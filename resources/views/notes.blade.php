@@ -24,13 +24,18 @@
                         <td><a href="/{{ $note->url }}" target="_blank"
                                class="note-url">{{ $note->title ?? $note->url }}</a></td>
                         <td class="d-flex action-buttons">
-                            <form action="/{{ $note->url }}" method="post">
-                                @method('delete')
-                                @csrf
-                                <button type="button" class="btn btn-danger btn-sm deleteNoteBtn" data-toggle="tooltip" data-placement="top" title="Delete note">
+                            <button type="button" class="btn btn-primary btn-sm passwordBtn" data-toggle="modal" data-target="#exampleModal" data-password="{{ $note->password }}" data-url="{{ $note->url }}">
+                                <span data-toggle="tooltip" data-placement="top" title="Password Options">
+                                    <i class="fa fa-key"></i>
+                                </span>
+                            </button>
+
+                            <button type="button" class="btn btn-danger btn-sm deleteNoteBtn" data-toggle="modal" data-target="#deleteNoteModal" data-url="{{ $note->url }}">
+                                <span data-toggle="tooltip" data-placement="top" title="Delete note">
                                     <i class="fa fa-trash"></i>
-                                </button>
-                            </form>
+                                </span>
+                            </button>
+
                             <button type="button" class="btn btn-primary btn-sm copyToClipboard" data-toggle="tooltip" data-placement="top" title="Copy link to clipboard">
                                 <i class="fa fa-copy"></i>
                             </button>
@@ -42,12 +47,70 @@
             </table>
 
             <input type="text" id="myInput">
+
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Password Management</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+
+                        <div class="modal-body">
+                            <form action="/notes" method="post" id="note-form">
+                                @method('put')
+                                @csrf
+
+                                <input type="hidden" name="url" value="" id="url">
+
+                                <div class="form-group">
+                                    <input type="text" name="password" class="form-control" id="password"
+                                           placeholder="Give a password" value="">
+                                </div>
+
+                                <button type="submit" name="update-password" class="btn btn-warning">Add or Update Password
+                                </button>
+                                <button type="submit" name="delete-password" class="btn btn-success">Remove Password</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Note Note Modal -->
+            <div class="modal fade" id="deleteNoteModal" tabindex="-1" role="dialog" aria-labelledby="deleteNoteModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteNoteModalLabel">Are you sure to delete the note?</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+
+                        <div class="modal-footer">
+                            <form method="post">
+                                @method('delete')
+                                @csrf
+
+                                <button type="submit" class="btn btn-danger">YES</button>
+                            </form>
+                            <button type="button" class="btn btn-success" data-dismiss="modal">NO</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 @endsection
 
 @section('javascript')
-    <script src="{{ asset('js/bootbox.min.js') }}"></script>
     <script>
         $(document).ready(function () {
 
@@ -66,29 +129,19 @@
                 $(this).attr('data-original-title', 'Copy link to clipboard');
             });
 
-            $('.deleteNoteBtn').click(function () {
-                const that = $(this);
-                bootbox.confirm({
-                    message: "Are you sure to delete the note?",
-                    size: 'small',
-                    backdrop: true,
-                    buttons: {
-                        confirm: {
-                            label: 'Yes',
-                            className: 'btn-success'
-                        },
-                        cancel: {
-                            label: 'No',
-                            className: 'btn-danger'
-                        }
-                    },
-                    callback: function (result) {
-                        if (result) {
-                            that.parent('form').submit();
-                        }
-                    }
-                });
-            })
+            $('#exampleModal').on('show.bs.modal', function (event) {
+                const button = $(event.relatedTarget);
+                const modal = $(this);
+                modal.find('#url').val(button.data('url'));
+                modal.find('#password').val(button.data('password'));
+            });
+
+            $('#deleteNoteModal').on('show.bs.modal', function (event) {
+                const button = $(event.relatedTarget);
+                const modal = $(this);
+                modal.find('form').attr('action', button.data('url'));
+                modal.find('#password').val(button.data('password'));
+            });
 
         });
     </script>

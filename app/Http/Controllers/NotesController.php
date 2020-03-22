@@ -34,7 +34,9 @@ class NotesController extends Controller
 
             return redirect($url);
         }
-
+//        if ($note->password) {
+//            return 'pass';
+//        }
         return view('note', ['note' => $note]);
     }
 
@@ -110,6 +112,31 @@ class NotesController extends Controller
         }
 
         return redirect($request->url());
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function updateAuthorized(Request $request)
+    {
+        if ($request->has('update-password')) {
+            Notes::where('url', $request->url)
+                ->update([
+                    'password' => $request->password,
+                ]);
+        }
+
+        if ($request->has('delete-password')) {
+            Notes::where('url', $request->url)
+                ->update([
+                    'password' => null,
+                ]);
+        }
+
+        return redirect()->back();
     }
 
     /**
