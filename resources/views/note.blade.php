@@ -111,7 +111,7 @@
                 document.execCommand("copy");
                 copyTextInput.hide();
 
-                $(this).attr('data-original-title', 'Link is Copied to clipboard').tooltip('show');
+                $(this).attr('data-original-title', 'Link is copied to clipboard').tooltip('show');
 
                 $(this).attr('data-original-title', 'Copy link to clipboard');
             })
