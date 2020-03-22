@@ -26,7 +26,7 @@ class HomeController extends Controller
 
     }
 
-    private function randomString()
+    private function randomString(): string
     {
         return Str::random('8');
     }

@@ -13,12 +13,13 @@ class NotesController extends Controller
     {
         return view('notes', ['notes' => Notes::where('owner_id', Auth::id())->latest()->get()]);
     }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($url)
+    public function index(Request $request, $url)
     {
 
         $note = Notes::where('url', $url)->first();
@@ -38,9 +39,10 @@ class NotesController extends Controller
 
             return redirect($url);
         }
-//        if ($note->password) {
-//            return 'pass';
-//        }
+
+        if ($note->password && $request->password !== $note->password) {
+            return view('password');
+        }
         return view('note', ['note' => $note]);
     }
 

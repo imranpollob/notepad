@@ -68,7 +68,7 @@
                                 <input type="hidden" name="url" value="" id="url">
 
                                 <div class="form-group">
-                                    <input type="text" name="password" class="form-control" id="password"
+                                    <input type="password" name="password" class="form-control" id="password"
                                            placeholder="Give a password" value="">
                                 </div>
 
