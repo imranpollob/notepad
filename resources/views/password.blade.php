@@ -4,7 +4,7 @@
 
     <h3 class="user-note-heading text-center">This Note is password protected</h3>
 
-    <form action="/{{ Request::path() }}" class="form-inline d-flex justify-content-center">
+    <form action="/{{ Request::path() }}/password" class="form-inline d-flex justify-content-center" method="post">
         @csrf
 
         <label class="mb-2 mx-2" for="inlineFormCustomSelectPref">Password</label>

@@ -40,9 +40,10 @@ class NotesController extends Controller
             return redirect($url);
         }
 
-        if ($note->password && $request->password !== $note->password) {
+        if ($note->password && session('note_password') !== $note->password) {
             return view('password');
         }
+
         return view('note', ['note' => $note]);
     }
 
@@ -157,5 +158,25 @@ class NotesController extends Controller
             ->delete();
 
         return redirect('/notes');
+    }
+
+    /**
+     * @param Request $request
+     * @param $url
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function password(Request $request, $url)
+    {
+        $note = Notes::where('url', $url)->first();
+
+        if (!$note) return redirect('/');
+
+        if ($note->password && $request->password !== $note->password) {
+            return redirect($url);
+        }
+
+        session(['note_password' => $request->password]);
+
+        return redirect($url);
     }
 }
