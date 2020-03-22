@@ -24,8 +24,7 @@ $(document).ready(function () {
             url: '/{{ Request::path() }}',
             type: "POST",
             data: $('#note-form').serialize(),
-            success: function (response) {
-                console.log('saved');
+            success: function () {
                 $('#save-status').text('Saved');
             }
         });

@@ -27,12 +27,12 @@
                             <form action="/{{ $note->url }}" method="post">
                                 @method('delete')
                                 @csrf
-                                <button type="submit" class="btn btn-danger btn-sm" data-toggle="tooltip"
-                                        data-placement="top" title="Delete note"><i class="fa fa-trash"></i> Delete
+                                <button type="submit" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="top" title="Delete note">
+                                    <i class="fa fa-trash"></i>
                                 </button>
                             </form>
-                            <button type="button" class="btn btn-primary btn-sm copyToClipboard"
-                                    title="Copy link to clipboard"><i class="fa fa-copy"></i> Copy link to clipboard
+                            <button type="button" class="btn btn-primary btn-sm copyToClipboard" data-toggle="tooltip" data-placement="top" title="Copy link to clipboard">
+                                <i class="fa fa-copy"></i>
                             </button>
 
                         </td>
@@ -59,6 +59,10 @@
                 copyTextInput.select();
                 document.execCommand("copy");
                 copyTextInput.hide();
+
+                $(this).attr('data-original-title', 'Copied').tooltip('show');
+
+                $(this).attr('data-original-title', 'Copy link to clipboard');
             })
 
         });

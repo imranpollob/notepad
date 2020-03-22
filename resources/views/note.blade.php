@@ -5,25 +5,22 @@
         @csrf
 
         <div class="form-group">
-            <textarea name="data" class="form-control" id="data" rows="15"
-                      placeholder="Just dump data!!">{{ $note->data }}</textarea>
+            <textarea name="data" class="form-control" id="data" rows="15" placeholder="Just dump data!!">{{ $note->data }}</textarea>
         </div>
 
         <div class="form-group">
-            <input type="text" name="title" class="form-control" id="title" value="{{ $note->title }}"
-                   placeholder="Optional Title">
+            <input type="text" name="title" class="form-control" id="title" value="{{ $note->title }}" placeholder="Optional Title">
         </div>
     </form>
 
     <div class="bottom-panel">
         <div id="save-status" class="badge badge-success">Start Typing</div>
         <div>
-            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#exampleModal"><i
-                    class="fa fa-key"></i> Password
+            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#exampleModal">
+                <i class="fa fa-key"></i> Password
             </button>
-            <button type="button" class="btn btn-primary btn-sm copyToClipboard" data-toggle="tooltip"
-                    data-placement="top"
-                    title="Copy link to clipboard"><i class="fa fa-copy"></i> Copy link to clipboard
+            <button type="button" class="btn btn-primary btn-sm copyToClipboard" data-toggle="tooltip" data-placement="top" title="Copy link to clipboard">
+                <i class="fa fa-copy"></i> <span class="d-none d-md-inline">Copy link to clipboard</span>
             </button>
         </div>
     </div>
@@ -97,14 +94,12 @@
                     url: '/{{ Request::path() }}',
                     type: "POST",
                     data: $('#note-form').serialize(),
-                    success: function (response) {
-                        console.log('saved');
+                    success: function () {
                         $('#save-status').text('Saved');
                     }
                 });
             }
 
-            const copytBtnText = $('.copyToClipboard').text();
 
             $('.copyToClipboard').click(function () {
                 let text = window.location.href;
@@ -118,7 +113,7 @@
 
                 $(this).attr('data-original-title', 'Copied').tooltip('show');
 
-                $(this).attr('data-original-title', copytBtnText);
+                $(this).attr('data-original-title', 'Copy link to clipboard');
             })
 
         });
