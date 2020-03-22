@@ -27,7 +27,7 @@
                             <form action="/{{ $note->url }}" method="post">
                                 @method('delete')
                                 @csrf
-                                <button type="submit" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="top" title="Delete note">
+                                <button type="button" class="btn btn-danger btn-sm deleteNoteBtn" data-toggle="tooltip" data-placement="top" title="Delete note">
                                     <i class="fa fa-trash"></i>
                                 </button>
                             </form>
@@ -47,6 +47,7 @@
 @endsection
 
 @section('javascript')
+    <script src="{{ asset('js/bootbox.min.js') }}"></script>
     <script>
         $(document).ready(function () {
 
@@ -63,6 +64,30 @@
                 $(this).attr('data-original-title', 'Copied').tooltip('show');
 
                 $(this).attr('data-original-title', 'Copy link to clipboard');
+            });
+
+            $('.deleteNoteBtn').click(function () {
+                const that = $(this);
+                bootbox.confirm({
+                    message: "Are you sure to delete the note?",
+                    size: 'small',
+                    backdrop: true,
+                    buttons: {
+                        confirm: {
+                            label: 'Yes',
+                            className: 'btn-success'
+                        },
+                        cancel: {
+                            label: 'No',
+                            className: 'btn-danger'
+                        }
+                    },
+                    callback: function (result) {
+                        if (result) {
+                            that.parent('form').submit();
+                        }
+                    }
+                });
             })
 
         });
