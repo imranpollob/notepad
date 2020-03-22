@@ -18,8 +18,11 @@
     <div class="bottom-panel">
         <div id="save-status" class="badge badge-success">Start Typing</div>
         <div>
-            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-key"></i> Password</button>
-            <button type="button" class="btn btn-primary btn-sm copyToClipboard"
+            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#exampleModal"><i
+                    class="fa fa-key"></i> Password
+            </button>
+            <button type="button" class="btn btn-primary btn-sm copyToClipboard" data-toggle="tooltip"
+                    data-placement="top"
                     title="Copy link to clipboard"><i class="fa fa-copy"></i> Copy link to clipboard
             </button>
         </div>
@@ -56,7 +59,8 @@
                                    placeholder="Give a password" value="{{ $note->password }}">
                         </div>
 
-                        <button type="submit" name="update-password" class="btn btn-warning">Add or Update Password</button>
+                        <button type="submit" name="update-password" class="btn btn-warning">Add or Update Password
+                        </button>
                         <button type="submit" name="delete-password" class="btn btn-success">Remove Password</button>
                     </form>
                 </div>
@@ -100,7 +104,9 @@
                 });
             }
 
-            $('.copyToClipboard').click(function (event) {
+            const copytBtnText = $('.copyToClipboard').text();
+
+            $('.copyToClipboard').click(function () {
                 let text = window.location.href;
 
                 const copyTextInput = $("#myInput");
@@ -109,6 +115,10 @@
                 copyTextInput.select();
                 document.execCommand("copy");
                 copyTextInput.hide();
+
+                $(this).attr('data-original-title', 'Copied').tooltip('show');
+
+                $(this).attr('data-original-title', copytBtnText);
             })
 
         });
