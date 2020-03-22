@@ -9,10 +9,6 @@ use Illuminate\Support\Str;
 
 class HomeController extends Controller
 {
-    public function notes()
-    {
-        return view('notes', ['notes' => Notes::where('owner_id', Auth::id())->latest()->get()]);
-    }
 
     public function newNote()
     {
