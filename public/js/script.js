@@ -21,7 +21,7 @@ $(document).ready(function () {
         });
 
         $.ajax({
-            url: '/{{ Request::path() }}',
+            // url: '/{{ Request::path() }}',
             type: "POST",
             data: $('#note-form').serialize(),
             success: function () {

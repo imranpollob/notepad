@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <form action="/{{ Request::path() }}" method="post" id="note-form">
+    <form action="{{ url()->current() }}" method="post" id="note-form">
         @csrf
 
         <div class="form-group">
