@@ -131,6 +131,7 @@ class NotesController extends Controller
     {
         if ($request->has('update-password')) {
             Notes::where('url', $request->url)
+                ->where('owner_id', auth()->id())
                 ->update([
                     'password' => $request->password,
                 ]);
@@ -138,6 +139,7 @@ class NotesController extends Controller
 
         if ($request->has('delete-password')) {
             Notes::where('url', $request->url)
+                ->where('owner_id', auth()->id())
                 ->update([
                     'password' => null,
                 ]);

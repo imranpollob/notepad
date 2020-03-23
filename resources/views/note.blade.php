@@ -47,7 +47,7 @@
                 </div>
 
                 <div class="modal-body">
-                    <form action="/{{ Request::path() }}/" method="post" id="note-form">
+                    <form action="/hudai/" method="post" id="note-form">
                         @method('put')
                         @csrf
 
