@@ -1,9 +1,13 @@
+* {
+    border-radius: 0 !important;
+}
+
 .social-login-text {
     padding-bottom: 20px;
 }
 
 .user-note-heading {
-    padding: 20px;
+    padding: 30px;
     font-weight: 400;
 }
 
@@ -18,7 +22,7 @@
 }
 
 .action-buttons button{
-    margin-right: 10px;
+    /*margin-right: 10px;*/
 }
 
 #myInput {

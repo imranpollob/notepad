@@ -6,7 +6,7 @@
 
 @section('content')
     <div class="container">
-        <div class="row text-center">
+        <div class="row justify-content-center">
             @if (session('status'))
                 <div class="alert alert-success" role="alert">
                     {{ session('status') }}
@@ -21,30 +21,37 @@
                 <thead>
                 <tr>
                     <th>Note</th>
-                    <th style="width: 30%">Actions</th>
+                    <th>Modified</th>
+                    <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
                 @foreach($notes as $note)
                     <tr>
-                        <td><a href="/{{ $note->url }}" target="_blank"
-                               class="note-url">{{ $note->title ?? $note->url }}</a></td>
+                        <td><a href="/{{ $note->url }}" target="_blank" class="note-url">{{ $note->title ?? $note->url }}</a></td>
+                        <td class="text-muted">{{ $note->updated_at->diffForHumans() }}</td>
                         <td class="d-flex action-buttons">
-                            <button type="button" class="btn btn-primary btn-sm passwordBtn" data-toggle="modal" data-target="#exampleModal" data-password="{{ $note->password }}" data-url="{{ $note->url }}">
+
+                            <div class="btn-group" role="group" aria-label="Basic example">
+                                <button type="button" class="btn btn-primary btn-sm copyToClipboard" data-toggle="tooltip" data-placement="top" title="Copy link to clipboard">
+                                    <i class="fa fa-copy"></i>
+                                </button>
+
                                 <span data-toggle="tooltip" data-placement="top" title="Password Options">
-                                    <i class="fa fa-key"></i>
+                                    <button type="button" class="btn btn-warning btn-sm passwordBtn" data-toggle="modal" data-target="#exampleModal"
+                                            data-password="{{ $note->password }}" data-url="{{ $note->url }}">
+                                        <i class="fa fa-key"></i>
+                                    </button>
                                 </span>
-                            </button>
 
-                            <button type="button" class="btn btn-danger btn-sm deleteNoteBtn" data-toggle="modal" data-target="#deleteNoteModal" data-url="{{ $note->url }}">
                                 <span data-toggle="tooltip" data-placement="top" title="Delete note">
-                                    <i class="fa fa-trash"></i>
+                                    <button type="button" class="btn btn-danger btn-sm deleteNoteBtn" data-toggle="modal" data-target="#deleteNoteModal"
+                                            data-url="{{ $note->url }}">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
                                 </span>
-                            </button>
 
-                            <button type="button" class="btn btn-primary btn-sm copyToClipboard" data-toggle="tooltip" data-placement="top" title="Copy link to clipboard">
-                                <i class="fa fa-copy"></i>
-                            </button>
+                            </div>
 
                         </td>
                     </tr>
@@ -122,7 +129,11 @@
     <script>
         $(document).ready(function () {
 
-            $('#notesTable').DataTable();
+            $('#notesTable').dataTable({
+                "order": [],
+                "pageLength": 25,
+                responsive: true
+            });
 
             $('.copyToClipboard').click(function (event) {
                 let text = window.location.origin + $(this).parent().siblings().find('a').attr('href');
