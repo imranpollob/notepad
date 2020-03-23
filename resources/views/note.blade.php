@@ -47,7 +47,7 @@
                 </div>
 
                 <div class="modal-body">
-                    <form action="{{  url('hudai') }}" method="post" id="note-form">
+                    <form action="{{  url()->current() }}" method="post" id="note-form">
                         @method('put')
                         @csrf
 
