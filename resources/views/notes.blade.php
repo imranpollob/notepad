@@ -1,8 +1,12 @@
 @extends('layouts.app')
 
+@section('stylesheet')
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
+@endsection
+
 @section('content')
     <div class="container">
-        <div class="row justify-content-center">
+        <div class="row text-center">
             @if (session('status'))
                 <div class="alert alert-success" role="alert">
                     {{ session('status') }}
@@ -10,8 +14,10 @@
             @endif
 
             <h3 class="user-note-heading">{{ Auth::user()->name }}'s Notes</h3>
+        </div>
 
-            <table class="table table-bordered table-striped table-hover">
+        <div class="row">
+            <table class="table table-bordered table-striped table-hover" id="notesTable" style="width:100%">
                 <thead>
                 <tr>
                     <th>Note</th>
@@ -111,8 +117,12 @@
 @endsection
 
 @section('javascript')
+    <script defer src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script defer src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
     <script>
         $(document).ready(function () {
+
+            $('#notesTable').DataTable();
 
             $('.copyToClipboard').click(function (event) {
                 let text = window.location.origin + $(this).parent().siblings().find('a').attr('href');
