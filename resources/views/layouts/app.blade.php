@@ -12,17 +12,17 @@
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
     <title>Notepad Online - Free store and share</title>
-    <meta name="description" content="Notepad online is a free tool for storing and sharing you notes. No registration required."/>
+    <meta name="description" content="Notepad online is a free tool for storing and sharing your notes. No registration required."/>
     <meta name="robots" content="”index," follow”/>
 
     <meta property="og:title" content="Notepad Online - Free store and share">
-    <meta property="og:description" content="Notepad online is a free tool for storing and sharing you notes. No registration required.">
+    <meta property="og:description" content="Notepad online is a free tool for storing and sharing your notes. No registration required.">
     <meta property="og:image" content="https://notepad.imranpollob.com/android-chrome-512x512.png">
     <meta property="og:url" content="https://notepad.imranpollob.com">
     <meta property="og:site_name" content="Notepad Online - Free store and share">
 
     <meta name="twitter:title" content="Notepad Online - Free store and share">
-    <meta name="twitter:description" content="Notepad online is a free tool for storing and sharing you notes. No registration required.">
+    <meta name="twitter:description" content="Notepad online is a free tool for storing and sharing your notes. No registration required.">
     <meta name="twitter:image" content="https://notepad.imranpollob.com/android-chrome-512x512.png">
     <meta name="twitter:card" content="summary">
 
