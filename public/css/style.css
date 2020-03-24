@@ -2,6 +2,10 @@
     border-radius: 0 !important;
 }
 
+body {
+    font-family: 'Lora', sans-serif;
+}
+
 .social-login-text {
     padding-bottom: 20px;
 }
@@ -21,7 +25,7 @@
     text-align: center;
 }
 
-.action-buttons button{
+.action-buttons button {
     /*margin-right: 10px;*/
 }
 
