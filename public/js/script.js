@@ -4,22 +4,18 @@ $(document).ready(function () {
     let typingTimer;                //timer identifier
     let doneTypingInterval = 2000;  //time in ms (5 seconds)
 
-    new FroalaEditor('textarea', {
-        placeholderText: 'Just dump data!!',
-        fileUpload: false,
-        imageUpload: false,
-        videoUpload: false,
-        events: {
-            'keyup': function (keyupEvent) {
+    $('#data').summernote({
+        minHeight: 300,
+        focus: true,
+        callbacks: {
+            onChange: function() {
                 $('#save-status').text('Saving ...');
                 clearTimeout(typingTimer);
 
                 typingTimer = setTimeout(doneTyping, doneTypingInterval);
             }
-        }
+        },
     });
-
-    $("div[style='z-index:9999;width:100%;position:relative']").hide();
 
     //on keyup, start the countdown
     $('#data, #title').keyup(function () {
