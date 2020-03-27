@@ -7,8 +7,9 @@ $(document).ready(function () {
     $('#data').summernote({
         minHeight: 300,
         focus: true,
+        placeholder: "Just dump data!!",
         callbacks: {
-            onChange: function() {
+            onChange: function () {
                 $('#save-status').text('Saving ...');
                 clearTimeout(typingTimer);
 
@@ -18,7 +19,7 @@ $(document).ready(function () {
     });
 
     //on keyup, start the countdown
-    $('#data, #title').keyup(function () {
+    $('#title').keyup(function () {
         $('#save-status').text('Saving ...');
         clearTimeout(typingTimer);
 

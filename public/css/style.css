@@ -42,3 +42,7 @@ body {
 #notesTable_wrapper {
     width: 100%;
 }
+
+.note-group-select-from-files {
+    display: none;
+}
