@@ -19,7 +19,7 @@ $(document).ready(function () {
         }
     });
 
-    $('#note-form > div:nth-child(2) > div > div.fr-wrapper > div:nth-child(1)').hide();
+    $("div[style='z-index:9999;width:100%;position:relative']").hide();
 
     //on keyup, start the countdown
     $('#data, #title').keyup(function () {
