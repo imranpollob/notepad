@@ -19,6 +19,8 @@ $(document).ready(function () {
         }
     });
 
+    $('#note-form > div:nth-child(2) > div > div.fr-wrapper > div:nth-child(1)').hide();
+
     //on keyup, start the countdown
     $('#data, #title').keyup(function () {
         $('#save-status').text('Saving ...');
