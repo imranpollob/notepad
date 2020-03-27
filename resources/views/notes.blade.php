@@ -136,7 +136,7 @@
             });
 
             $('.copyToClipboard').click(function (event) {
-                let text = window.location.origin + $(this).parent().siblings().find('a').attr('href');
+                let text = window.location.origin + $(this).parents('tr').find('.note-url').attr('href');
 
                 const copyTextInput = $("#myInput");
                 copyTextInput.show();
