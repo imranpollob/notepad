@@ -16,6 +16,7 @@ $(document).ready(function () {
                 typingTimer = setTimeout(doneTyping, doneTypingInterval);
             }
         },
+        followingToolbar: true
     });
 
     //on keyup, start the countdown
