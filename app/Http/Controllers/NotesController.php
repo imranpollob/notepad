@@ -172,7 +172,7 @@ class NotesController extends Controller
         if (!$note) return redirect('/');
 
         if ($note->password && $request->password !== $note->password) {
-            return redirect($url);
+            return redirect($url)->with('error', 'Oops! Password is not right.');
         }
 
         session(['note_password' => $request->password]);
