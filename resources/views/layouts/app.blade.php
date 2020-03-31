@@ -63,7 +63,13 @@
                         </li>
                     @endif
                 @else
-                    <li class="nav-item">
+                    @if(auth()->id() === 1)
+                        <li class="nav-item {{ (request()->is('dashboard')) ? 'active' : '' }}">
+                            <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
+                        </li>
+                    @endif
+
+                    <li class="nav-item {{ (request()->is('notes')) ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route('notes') }}">My Notes</a>
                     </li>
 
