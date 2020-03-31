@@ -17,10 +17,14 @@
                 <h5 class="card-title m-0">Total Users <span class="float-right">{{ $totalUser }}</span></h5>
             </div>
         </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title m-0">Filled Notes <span class="float-right">{{ $nonEmptyNotes }}</span></h5>
+            </div>
+        </div>
     </div>
 
     <div class="row mt-4 justify-content-center">
-
         <table class="table table-bordered table-hover">
             <tr>
                 <th>Name</th>

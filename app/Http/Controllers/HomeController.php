@@ -38,6 +38,7 @@ class HomeController extends Controller
         return view('dashboard')->with([
             'totalNotes' => Notes::count(),
             'totalUser' => User::count(),
+            'nonEmptyNotes' => Notes::where('data', '!=', '')->count(),
             'notesPerUser' => DB::table('notes')
                 ->join('users', 'users.id', '=', 'notes.owner_id')
                 ->select('notes.id', 'owner_id', DB::raw('count(*) as notes'), 'users.name', 'users.email')
