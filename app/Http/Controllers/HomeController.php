@@ -31,4 +31,9 @@ class HomeController extends Controller
         return Str::random('8');
     }
 
+    public function dashboard()
+    {
+        return view('dashboard');
+    }
+
 }

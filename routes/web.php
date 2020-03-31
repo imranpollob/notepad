@@ -13,6 +13,8 @@ Route::put('/notes', 'NotesController@updateAuthorized')->middleware('auth');
 Route::get('/auth/redirect/{provider}', 'SocialController@redirect');
 Route::get('/callback/{provider}', 'SocialController@callback');
 
+Route::get('/dashboard', 'HomeController@dashboard')->middleware(['auth', 'admin']);
+
 Route::get('{url}', 'NotesController@index');
 Route::post('{url}', 'NotesController@store');
 Route::post('{url}/password', 'NotesController@password');
