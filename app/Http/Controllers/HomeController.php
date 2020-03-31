@@ -53,7 +53,7 @@ class HomeController extends Controller
     {
         $notes = Notes::where('data', null)->delete();
 
-        return back()->with('success', "$notes empty notes all deleted successfully");
+        return back()->with('success', "$notes empty notes are deleted successfully.");
     }
 
 }
