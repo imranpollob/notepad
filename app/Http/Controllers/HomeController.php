@@ -49,4 +49,11 @@ class HomeController extends Controller
         ]);
     }
 
+    public function delete()
+    {
+        $notes = Notes::where('data', null)->delete();
+
+        return back()->with('success', "$notes empty notes all deleted successfully");
+    }
+
 }

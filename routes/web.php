@@ -14,6 +14,7 @@ Route::get('/auth/redirect/{provider}', 'SocialController@redirect');
 Route::get('/callback/{provider}', 'SocialController@callback');
 
 Route::get('/dashboard', 'HomeController@dashboard')->middleware(['auth', 'admin'])->name('dashboard');
+Route::delete('/dashboard', 'HomeController@delete')->middleware(['auth', 'admin'])->name('dashboard');
 
 Route::get('{url}', 'NotesController@index');
 Route::post('{url}', 'NotesController@store');
