@@ -40,8 +40,11 @@ class UndefinedVariableSolutionProvider implements HasSolutionsForThrowable
         return $solutions;
     }
 
-    protected function findCorrectVariableSolutions(Throwable $throwable, string $variableName, string $viewFile): array
-    {
+    protected function findCorrectVariableSolutions(
+        ViewException $throwable,
+        string $variableName,
+        string $viewFile
+    ): array {
         return collect($throwable->getViewData())->map(function ($value, $key) use ($variableName) {
             similar_text($variableName, $key, $percentage);
 
@@ -54,7 +57,7 @@ class UndefinedVariableSolutionProvider implements HasSolutionsForThrowable
             return $solution->isRunnable()
                 ? $solution
                 : BaseSolution::create($solution->getSolutionTitle())
-                    ->setSolutionDescription($solution->getSolutionActionDescription());
+                    ->setSolutionDescription($solution->getSolutionDescription());
         })->toArray();
     }
 
@@ -65,7 +68,7 @@ class UndefinedVariableSolutionProvider implements HasSolutionsForThrowable
         return $optionalSolution->isRunnable()
             ? $optionalSolution
             : BaseSolution::create($optionalSolution->getSolutionTitle())
-                ->setSolutionDescription($optionalSolution->getSolutionActionDescription());
+                ->setSolutionDescription($optionalSolution->getSolutionDescription());
     }
 
     protected function getNameAndView(Throwable $throwable): ?array
@@ -73,10 +76,13 @@ class UndefinedVariableSolutionProvider implements HasSolutionsForThrowable
         $pattern = '/Undefined variable: (.*?) \(View: (.*?)\)/';
 
         preg_match($pattern, $throwable->getMessage(), $matches);
+
         if (count($matches) === 3) {
-            [$string, $variableName, $viewFile] = $matches;
+            [, $variableName, $viewFile] = $matches;
 
             return compact('variableName', 'viewFile');
         }
+
+        return null;
     }
 }

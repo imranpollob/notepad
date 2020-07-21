@@ -83,7 +83,7 @@ final class TestRunner extends BaseTestRunner
     private $loader;
 
     /**
-     * @var Printer&TestListener
+     * @psalm-var Printer&TestListener
      */
     private $printer;
 
@@ -117,7 +117,7 @@ final class TestRunner extends BaseTestRunner
      * @throws \PHPUnit\Runner\Exception
      * @throws Exception
      */
-    public function doRun(Test $suite, array $arguments = [], bool $exit = true): TestResult
+    public function doRun(Test $suite, array $arguments = [], array $warnings = [], bool $exit = true): TestResult
     {
         if (isset($arguments['configuration'])) {
             $GLOBALS['__PHPUNIT_CONFIGURATION_FILE'] = $arguments['configuration'];
@@ -331,7 +331,7 @@ final class TestRunner extends BaseTestRunner
             }
         }
 
-        foreach ($arguments['warnings'] as $warning) {
+        foreach ($warnings as $warning) {
             $this->writeMessage('Warning', $warning);
         }
 
@@ -503,59 +503,65 @@ final class TestRunner extends BaseTestRunner
         }
 
         if ($codeCoverageReports > 0) {
-            $codeCoverage = new CodeCoverage(
-                null,
-                $this->codeCoverageFilter
-            );
-
-            $codeCoverage->setUnintentionallyCoveredSubclassesWhitelist(
-                [Comparator::class]
-            );
-
-            $codeCoverage->setCheckForUnintentionallyCoveredCode(
-                $arguments['strictCoverage']
-            );
-
-            $codeCoverage->setCheckForMissingCoversAnnotation(
-                $arguments['strictCoverage']
-            );
-
-            if (isset($arguments['forceCoversAnnotation'])) {
-                $codeCoverage->setForceCoversAnnotation(
-                    $arguments['forceCoversAnnotation']
-                );
-            }
-
-            if (isset($arguments['ignoreDeprecatedCodeUnitsFromCodeCoverage'])) {
-                $codeCoverage->setIgnoreDeprecatedCode(
-                    $arguments['ignoreDeprecatedCodeUnitsFromCodeCoverage']
-                );
-            }
-
-            if (isset($arguments['disableCodeCoverageIgnore'])) {
-                $codeCoverage->setDisableIgnoredLines(true);
-            }
-
-            if (!empty($filterConfiguration['whitelist'])) {
-                $codeCoverage->setAddUncoveredFilesFromWhitelist(
-                    $filterConfiguration['whitelist']['addUncoveredFilesFromWhitelist']
+            try {
+                $codeCoverage = new CodeCoverage(
+                    null,
+                    $this->codeCoverageFilter
                 );
 
-                $codeCoverage->setProcessUncoveredFilesFromWhitelist(
-                    $filterConfiguration['whitelist']['processUncoveredFilesFromWhitelist']
+                $codeCoverage->setUnintentionallyCoveredSubclassesWhitelist(
+                    [Comparator::class]
                 );
-            }
 
-            if (!$this->codeCoverageFilter->hasWhitelist()) {
-                if (!$whitelistFromConfigurationFile && !$whitelistFromOption) {
-                    $this->writeMessage('Error', 'No whitelist is configured, no code coverage will be generated.');
-                } else {
-                    $this->writeMessage('Error', 'Incorrect whitelist config, no code coverage will be generated.');
+                $codeCoverage->setCheckForUnintentionallyCoveredCode(
+                    $arguments['strictCoverage']
+                );
+
+                $codeCoverage->setCheckForMissingCoversAnnotation(
+                    $arguments['strictCoverage']
+                );
+
+                if (isset($arguments['forceCoversAnnotation'])) {
+                    $codeCoverage->setForceCoversAnnotation(
+                        $arguments['forceCoversAnnotation']
+                    );
                 }
 
-                $codeCoverageReports = 0;
+                if (isset($arguments['ignoreDeprecatedCodeUnitsFromCodeCoverage'])) {
+                    $codeCoverage->setIgnoreDeprecatedCode(
+                        $arguments['ignoreDeprecatedCodeUnitsFromCodeCoverage']
+                    );
+                }
 
-                unset($codeCoverage);
+                if (isset($arguments['disableCodeCoverageIgnore'])) {
+                    $codeCoverage->setDisableIgnoredLines(true);
+                }
+
+                if (!empty($filterConfiguration['whitelist'])) {
+                    $codeCoverage->setAddUncoveredFilesFromWhitelist(
+                        $filterConfiguration['whitelist']['addUncoveredFilesFromWhitelist']
+                    );
+
+                    $codeCoverage->setProcessUncoveredFilesFromWhitelist(
+                        $filterConfiguration['whitelist']['processUncoveredFilesFromWhitelist']
+                    );
+                }
+
+                if (!$this->codeCoverageFilter->hasWhitelist()) {
+                    if (!$whitelistFromConfigurationFile && !$whitelistFromOption) {
+                        $this->writeMessage('Error', 'No whitelist is configured, no code coverage will be generated.');
+                    } else {
+                        $this->writeMessage('Error', 'Incorrect whitelist config, no code coverage will be generated.');
+                    }
+
+                    $codeCoverageReports = 0;
+
+                    unset($codeCoverage);
+                }
+            } catch (CodeCoverageException $e) {
+                $this->writeMessage('Error', $e->getMessage());
+
+                $codeCoverageReports = 0;
             }
         }
 

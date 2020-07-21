@@ -194,7 +194,7 @@ class Expectation implements ExpectationInterface
     /**
      * Throws an exception if the expectation has been configured to do so
      *
-     * @throws \Exception|\Throwable
+     * @throws \Throwable
      * @return void
      */
     private function throwAsNecessary($return)
@@ -203,11 +203,7 @@ class Expectation implements ExpectationInterface
             return;
         }
 
-        $type = version_compare(PHP_VERSION, '7.0.0') >= 0
-            ? "\Throwable"
-            : "\Exception";
-
-        if ($return instanceof $type) {
+        if ($return instanceof \Throwable) {
             throw $return;
         }
 
@@ -344,8 +340,7 @@ class Expectation implements ExpectationInterface
             reset($this->_expectedArgs);
 
             if ($this->isAndAnyOtherArgumentsMatcher($lastExpectedArgument)) {
-                $argCountToSkipMatching = $argCount - count($this->_expectedArgs);
-                $args = array_slice($args, 0, $argCountToSkipMatching);
+                $args = array_slice($args, 0, array_search($lastExpectedArgument, $this->_expectedArgs, true));
                 return $this->_matchArgs($args);
             }
 
@@ -406,7 +401,8 @@ class Expectation implements ExpectationInterface
     /**
      * Expected argument setter for the expectation
      *
-     * @param mixed[] ...$args
+     * @param mixed ...$args
+     *
      * @return self
      */
     public function with(...$args)
@@ -455,7 +451,7 @@ class Expectation implements ExpectationInterface
         } elseif ($argsOrClosure instanceof Closure) {
             $this->withArgsMatchedByClosure($argsOrClosure);
         } else {
-            throw new \InvalidArgumentException(sprintf('Call to %s with an invalid argument (%s), only array and '.
+            throw new \InvalidArgumentException(sprintf('Call to %s with an invalid argument (%s), only array and ' .
                 'closure are allowed', __METHOD__, $argsOrClosure));
         }
         return $this;
@@ -486,7 +482,7 @@ class Expectation implements ExpectationInterface
     /**
      * Expected arguments should partially match the real arguments
      *
-     * @param mixed[] ...$expectedArgs
+     * @param mixed ...$expectedArgs
      * @return self
      */
     public function withSomeOfArgs(...$expectedArgs)
@@ -504,7 +500,7 @@ class Expectation implements ExpectationInterface
     /**
      * Set a return value, or sequential queue of return values
      *
-     * @param mixed[] ...$args
+     * @param mixed ...$args
      * @return self
      */
     public function andReturn(...$args)
@@ -516,7 +512,7 @@ class Expectation implements ExpectationInterface
     /**
      * Set a return value, or sequential queue of return values
      *
-     * @param mixed[] ...$args
+     * @param mixed ...$args
      * @return self
      */
     public function andReturns(...$args)
@@ -551,7 +547,7 @@ class Expectation implements ExpectationInterface
      * values. The arguments passed to the expected method are passed to the
      * closures as parameters.
      *
-     * @param callable[] ...$args
+     * @param callable ...$args
      * @return self
      */
     public function andReturnUsing(...$args)
@@ -589,7 +585,7 @@ class Expectation implements ExpectationInterface
      */
     public function andReturnUndefined()
     {
-        $this->andReturn(new \Mockery\Undefined);
+        $this->andReturn(new \Mockery\Undefined());
         return $this;
     }
 

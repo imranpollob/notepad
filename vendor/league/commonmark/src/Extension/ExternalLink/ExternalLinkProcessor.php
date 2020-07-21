@@ -17,12 +17,14 @@ use League\CommonMark\Inline\Element\Link;
 
 final class ExternalLinkProcessor
 {
+    public const APPLY_NONE = '';
+    public const APPLY_ALL = 'all';
+    public const APPLY_EXTERNAL = 'external';
+    public const APPLY_INTERNAL = 'internal';
+
     /** @var EnvironmentInterface */
     private $environment;
 
-    /**
-     * @param EnvironmentInterface $environment
-     */
     public function __construct(EnvironmentInterface $environment)
     {
         $this->environment = $environment;
@@ -30,6 +32,8 @@ final class ExternalLinkProcessor
 
     /**
      * @param DocumentParsedEvent $e
+     *
+     * @return void
      */
     public function __invoke(DocumentParsedEvent $e)
     {
@@ -51,6 +55,7 @@ final class ExternalLinkProcessor
 
                 if (self::hostMatches($host, $internalHosts)) {
                     $link->data['external'] = false;
+                    $this->applyRelAttribute($link, false);
                     continue;
                 }
 
@@ -60,16 +65,11 @@ final class ExternalLinkProcessor
         }
     }
 
-    /**
-     * @param Link   $link
-     * @param bool   $openInNewWindow
-     * @param string $classes
-     */
     private function markLinkAsExternal(Link $link, bool $openInNewWindow, string $classes): void
     {
         $link->data['external'] = true;
         $link->data['attributes'] = $link->getData('attributes', []);
-        $link->data['attributes']['rel'] = 'noopener noreferrer';
+        $this->applyRelAttribute($link, true);
 
         if ($openInNewWindow) {
             $link->data['attributes']['target'] = '_blank';
@@ -78,6 +78,32 @@ final class ExternalLinkProcessor
         if (!empty($classes)) {
             $link->data['attributes']['class'] = trim(($link->data['attributes']['class'] ?? '') . ' ' . $classes);
         }
+    }
+
+    private function applyRelAttribute(Link $link, bool $isExternal): void
+    {
+        $rel = [];
+
+        $options = [
+            'nofollow'   => $this->environment->getConfig('external_link/nofollow', self::APPLY_NONE),
+            'noopener'   => $this->environment->getConfig('external_link/noopener', self::APPLY_EXTERNAL),
+            'noreferrer' => $this->environment->getConfig('external_link/noreferrer', self::APPLY_EXTERNAL),
+        ];
+
+        foreach ($options as $type => $option) {
+            switch (true) {
+                case $option === self::APPLY_ALL:
+                case $isExternal && $option === self::APPLY_EXTERNAL:
+                case !$isExternal && $option === self::APPLY_INTERNAL:
+                    $rel[] = $type;
+            }
+        }
+
+        if ($rel === []) {
+            return;
+        }
+
+        $link->data['attributes']['rel'] = \implode(' ', $rel);
     }
 
     /**
