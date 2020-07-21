@@ -42,7 +42,7 @@
     <nav class="navbar navbar-expand navbar-light bg-white shadow-sm">
         <div class="container">
             <a class="navbar-brand" href="{{ url('/') }}">
-                <button class="btn btn-outline-primary">New Note</button>
+                <button class="btn btn-primary"><i class="fa fa-plus"></i></button>
             </a>
 
             <!-- Left Side Of Navbar -->
