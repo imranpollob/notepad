@@ -3,7 +3,7 @@
 }
 
 body {
-    font-family: 'Lora', sans-serif;
+    font-family: 'Open Sans', sans-serif;
 }
 
 .social-login-text {
@@ -45,4 +45,8 @@ body {
 
 .note-group-select-from-files {
     display: none;
+}
+
+.b-3 {
+    border-width: 2px;
 }

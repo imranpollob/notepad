@@ -12,3 +12,4 @@ yarn-error.log
 /.idea
 /.well-known
 /cgi-bin
+.DS_Store
