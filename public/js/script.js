@@ -17,9 +17,6 @@ $(document).ready(function () {
             }
         },
         followingToolbar: true
-    }).on("summernote.enter", function (we, e) {
-        $(this).summernote('pasteHTML', '<br>&VeryThinSpace;');
-        e.preventDefault();
     });
 
     //on keyup, start the countdown

@@ -50,3 +50,7 @@ body {
 .b-3 {
     border-width: 2px;
 }
+
+div.note-editable.card-block p {
+    margin-bottom: 0;
+}
