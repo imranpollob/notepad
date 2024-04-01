@@ -1,18 +1,26 @@
-# Note Online - Free store and share note
-
-Note online is a free tool for storing and sharing your notes.
-
-[Note Online](https://note.imranpollob.com)
+# Note Online - Store and share notes
+Note Online is a web application designed to simplify the process of taking, storing, and sharing notes.
 
 
-![Note Online](https://i.ibb.co/s95vBmL/Note-online.png "Note Online")
-
-## Requirements
-- php 7.4
-- laravel 7
+### Link
+Check out the live website **[Note Online](https://note.imranpollob.com)**
 
 
-## Installtion
+## Features
+- Save a note (autosaved)
+- Every note has a unique link
+- Possible to add password protection for a particular note
+- Supports rich text format
+- If logged in, you can see all of your created notes
+- Logged-in users can delete their notes
+- Easily copy the sharing link
+
+
+![Note Online](/screenshot.png)
+
+
+
+## Installation
 ```bash
 npm install
 composer install

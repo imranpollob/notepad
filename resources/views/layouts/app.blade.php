@@ -12,19 +12,19 @@
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
-    <title>Note Online - store and share notes</title>
+    <title>Note Online - Store and share notes</title>
     <meta name="description" content="Note online is a free tool for storing and sharing your notes. No registration required." />
     <meta name="robots" content="”index," follow” />
 
-    <meta property="og:title" content="Note Online - Free store and share">
+    <meta property="og:title" content="Note Online - Store and share notes">
     <meta property="og:description" content="Note online is a free tool for storing and sharing your notes. No registration required.">
-    <meta property="og:image" content="https://Note.imranpollob.com/android-chrome-512x512.png">
-    <meta property="og:url" content="https://Note.imranpollob.com">
-    <meta property="og:site_name" content="Note Online - Free store and share">
+    <meta property="og:image" content="https://note.imranpollob.com/android-chrome-512x512.png">
+    <meta property="og:url" content="https://note.imranpollob.com">
+    <meta property="og:site_name" content="Note Online - Store and share notes">
 
-    <meta name="twitter:title" content="Note Online - Free store and share">
+    <meta name="twitter:title" content="Note Online - Store and share notes">
     <meta name="twitter:description" content="Note online is a free tool for storing and sharing your notes. No registration required.">
-    <meta name="twitter:image" content="https://Note.imranpollob.com/android-chrome-512x512.png">
+    <meta name="twitter:image" content="https://note.imranpollob.com/android-chrome-512x512.png">
     <meta name="twitter:card" content="summary">
 
     <!-- Styles -->
