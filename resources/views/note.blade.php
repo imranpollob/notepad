@@ -26,9 +26,9 @@
 </div>
 
 <div class="site-info text-muted">
-    <h1>Paste online is a free tool for storing and sharing you notes.</h1>
+    <h1>Note online is a free tool for storing and sharing you notes.</h1>
     @guest
-    <h2>Manage all of your created notes by <a class="" href="{{ route('login') }}">login</a>.</h2>
+    <h2>Manage all of your created notes by <a class="" href="{{ route('login') }}">login</a></h2>
     @endguest
 </div>
 

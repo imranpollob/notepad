@@ -12,19 +12,19 @@
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
-    <title>Paste Online - store and share notes</title>
-    <meta name="description" content="Paste online is a free tool for storing and sharing your notes. No registration required." />
+    <title>Note Online - store and share notes</title>
+    <meta name="description" content="Note online is a free tool for storing and sharing your notes. No registration required." />
     <meta name="robots" content="”index," follow” />
 
-    <meta property="og:title" content="Paste Online - Free store and share">
-    <meta property="og:description" content="Paste online is a free tool for storing and sharing your notes. No registration required.">
-    <meta property="og:image" content="https://paste.imranpollob.com/android-chrome-512x512.png">
-    <meta property="og:url" content="https://paste.imranpollob.com">
-    <meta property="og:site_name" content="Paste Online - Free store and share">
+    <meta property="og:title" content="Note Online - Free store and share">
+    <meta property="og:description" content="Note online is a free tool for storing and sharing your notes. No registration required.">
+    <meta property="og:image" content="https://Note.imranpollob.com/android-chrome-512x512.png">
+    <meta property="og:url" content="https://Note.imranpollob.com">
+    <meta property="og:site_name" content="Note Online - Free store and share">
 
-    <meta name="twitter:title" content="Paste Online - Free store and share">
-    <meta name="twitter:description" content="Paste online is a free tool for storing and sharing your notes. No registration required.">
-    <meta name="twitter:image" content="https://paste.imranpollob.com/android-chrome-512x512.png">
+    <meta name="twitter:title" content="Note Online - Free store and share">
+    <meta name="twitter:description" content="Note online is a free tool for storing and sharing your notes. No registration required.">
+    <meta name="twitter:image" content="https://Note.imranpollob.com/android-chrome-512x512.png">
     <meta name="twitter:card" content="summary">
 
     <!-- Styles -->
@@ -47,7 +47,7 @@
         <nav class="navbar navbar-expand navbar-light bg-white shadow-sm">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
-                    <button class="btn btn-outline-primary btn-sm b-3"><i class="fa fa-plus"></i> <b>NEW PASTE</b></button>
+                    <button class="btn btn-outline-primary btn-sm b-3"><i class="fa fa-plus"></i> <b>NEW NOTE</b></button>
                 </a>
 
                 <!-- Left Side Of Navbar -->

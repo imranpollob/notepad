@@ -1,8 +1,24 @@
-# Paste Online - Free store and shar
+# Note Online - Free store and share note
 
-Paste online is a free tool for storing and sharing your notes.
+Note online is a free tool for storing and sharing your notes.
 
-[Paste Online](https://paste.imranpollob.com)
+[Note Online](https://note.imranpollob.com)
 
 
-![Paste Online](https://i.ibb.co/s95vBmL/paste-online.png "Paste Online")
+![Note Online](https://i.ibb.co/s95vBmL/Note-online.png "Note Online")
+
+## Requirements
+- php 7.4
+- laravel 7
+
+
+## Installtion
+```bash
+npm install
+composer install
+# modify .env file
+php artisan key:generate
+# create a database as defined in .env
+php artisan migrate
+php artisan serve
+```
