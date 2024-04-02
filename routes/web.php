@@ -2,15 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/hi', function () {
-    return 'Hi there!';
-});
-
-
 Route::get('/', 'HomeController@newNote')->name('home');
-Route::post('/', 'HomeController@newNote');
 
-Auth::routes(['register' => false]);
+Auth::routes([
+    'register' => false,
+    'reset' => false,
+    'confirm' => false,
+]);
 
 Route::get('/notes', 'NotesController@notes')->middleware('auth')->name('notes');
 Route::put('/notes', 'NotesController@updateAuthorized')->middleware('auth');
