@@ -71,7 +71,7 @@ class NotesController extends Controller
                 'title' => $request->title,
             ]);
 
-        return redirect($request->url());
+        // return redirect($request->url());
     }
 
     /**

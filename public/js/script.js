@@ -29,36 +29,20 @@ $(document).ready(function () {
 
     //user is "finished typing," do something
     function doneTyping() {
-        // Use jQuery to get the CSRF token and serialize the form data
-        const csrfToken = $('meta[name="csrf-token"]').attr("content");
-        const formData = $("#note-form").serialize();
-
-        fetch(window.location.href, {
-            // Use the current URL
-            method: "POST",
+        $.ajaxSetup({
             headers: {
-                "X-CSRF-TOKEN": csrfToken,
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: formData,
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-                return response.text(); // or response.json() if your endpoint returns JSON
-            })
-            .then(() => {
-                $("#save-status").text("Saved"); // Use jQuery to update the save status
-            })
-            .catch((error) => {
-                console.error(
-                    "There has been a problem with your fetch operation:",
-                    error
-                );
-            });
-    }
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
 
+        $.ajax({
+            type: "POST",
+            data: $('#note-form').serialize(),
+            success: function () {
+                $('#save-status').text('Saved');
+            }
+        });
+    }
 
     $(function () {
         $('[data-toggle="tooltip"]').tooltip();
