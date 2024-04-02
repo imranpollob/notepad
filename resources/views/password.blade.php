@@ -7,10 +7,10 @@
     <form action="/{{ Request::path() }}/password" class="form-inline d-flex justify-content-center" method="post">
         @csrf
 
-        <label class="mb-2 mx-2" for="inlineFormCustomSelectPref">Password</label>
-        <input type="password" class="form-control form-control-sm mb-2 mr-sm-2" name="password">
+        <label class="mx-2" for="inlineFormCustomSelectPref">Password</label>
+        <input type="password" class="form-control form-control-sm mr-sm-2" name="password">
 
-        <button type="submit" class="btn btn-sm btn-primary mb-2">Submit</button>
+        <button type="submit" class="btn btn-sm btn-dark px-3 mt-2 mt-sm-0">Submit</button>
     </form>
 
 @endsection

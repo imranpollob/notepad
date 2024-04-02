@@ -54,12 +54,12 @@
                         <input type="password" name="password" class="form-control" id="password" placeholder="Give a password" value="{{ $note->password }}">
                     </div>
 
-                    <button type="submit" name="update-password" class="btn btn-warning">
+                    <button type="submit" name="update-password" class="btn btn-sm btn-dark">
                         {{ $note->password ? 'Update' : 'Add' }} Password
                     </button>
 
                     @if($note->password) 
-                    <button type="submit" name="delete-password" class="btn btn-success">Remove Password</button>
+                    <button type="submit" name="delete-password" class="btn btn-sm btn-outline-dark">Remove Password</button>
                     @endif
                 </form>
             </div>

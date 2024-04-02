@@ -33,19 +33,19 @@
                         <td class="d-flex action-buttons">
 
                             <div class="btn-group" role="group" aria-label="Basic example">
-                                <button type="button" class="btn btn-primary btn-sm copyToClipboard" data-toggle="tooltip" data-placement="top" title="Copy link to clipboard">
+                                <button type="button" class="btn btn-outline-dark btn-sm copyToClipboard" data-toggle="tooltip" data-placement="top" title="Copy link to clipboard">
                                     <i class="fa fa-copy"></i>
                                 </button>
 
                                 <span data-toggle="tooltip" data-placement="top" title="Password options">
-                                    <button type="button" class="btn btn-warning btn-sm passwordBtn" data-toggle="modal" data-target="#exampleModal"
+                                    <button type="button" class="btn btn-outline-primary btn-sm passwordBtn" data-toggle="modal" data-target="#exampleModal"
                                             data-password="{{ $note->password }}" data-url="{{ $note->url }}">
                                         <i class="fa fa-key"></i>
                                     </button>
                                 </span>
 
                                 <span data-toggle="tooltip" data-placement="top" title="Delete note">
-                                    <button type="button" class="btn btn-danger btn-sm deleteNoteBtn" data-toggle="modal" data-target="#deleteNoteModal"
+                                    <button type="button" class="btn btn-outline-danger btn-sm deleteNoteBtn" data-toggle="modal" data-target="#deleteNoteModal"
                                             data-url="{{ $note->url }}">
                                         <i class="fa fa-trash"></i>
                                     </button>
@@ -85,9 +85,9 @@
                                            placeholder="Give a password" value="">
                                 </div>
 
-                                <button type="submit" name="update-password" class="btn btn-warning">Add or Update Password
+                                <button type="submit" name="update-password" class="btn btn-sm btn-dark">Add or Update Password
                                 </button>
-                                <button type="submit" name="delete-password" class="btn btn-success">Remove Password</button>
+                                <button type="submit" name="delete-password" class="btn btn-sm btn-outline-dark">Remove Password</button>
                             </form>
                         </div>
                     </div>
