@@ -2,6 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 
+Route::get('/hi', function () {
+    return 'Hi there!';
+});
+
+
 Route::get('/', 'HomeController@newNote')->name('home');
 Route::post('/', 'HomeController@newNote');
 
