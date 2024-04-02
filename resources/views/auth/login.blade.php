@@ -7,16 +7,16 @@
             <h4 class="mb-4">Login Features</h4>
             <ul class="list-unstyled list pl-5">
                 <li class="mb-3 d-flex align-items-center">
-                    <i class="fa fa-hourglass-end mr-3 text-dark"></i>See all of your created notes
+                    <i class="fa fa-eye mr-3 text-dark"></i>See all of your created notes
                 </li>
                 <li class="mb-3 d-flex align-items-center">
-                    <i class="fa fa-inbox mr-3 text-dark"></i>Delete a note
+                    <i class="fa fa-trash mr-3 text-dark"></i>Delete a note
                 </li>
                 <li class="mb-3 d-flex align-items-center">
-                    <i class="fa fa-rocket mr-3 text-dark"></i>Easily give password to a note
+                    <i class="fa fa-key mr-3 text-dark"></i>Easily give password to a note
                 </li>
                 <li class="mb-3 d-flex align-items-center">
-                    <i class="fa fa-trophy mr-3 text-dark"></i>Quickly copy sharing link
+                    <i class="fa fa-clipboard mr-3 text-dark"></i>Quickly copy sharing link
                 </li>
             </ul>
         </div>

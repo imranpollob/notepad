@@ -60,7 +60,7 @@
                     <!-- Authentication Links -->
                     @guest
                     <li class="nav-item">
-                        <a class="btn btn-outline-dark btn-sm m-4" href="{{ route('login') }}"><i class="fa fa-sign-in"></i> Login</a>
+                        <a class="btn btn-outline-dark btn-sm mx-4" href="{{ route('login') }}"><i class="fa fa-sign-in"></i> Login</a>
                     </li>
                     @else
                     @if(auth()->id() === 1)
