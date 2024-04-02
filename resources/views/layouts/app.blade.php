@@ -47,7 +47,7 @@
         <nav class="navbar navbar-expand navbar-light bg-white shadow-sm">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
-                    <button class="btn btn-outline-primary btn-sm b-3"><i class="fa fa-plus"></i> <b>NEW NOTE</b></button>
+                    <button type="button" class="btn btn-outline-dark btn-sm b-3"><i class="fa fa-plus"></i> <b>NEW NOTE</b></button>
                 </a>
 
                 <!-- Left Side Of Navbar -->
@@ -60,23 +60,21 @@
                     <!-- Authentication Links -->
                     @guest
                     <li class="nav-item">
-                        <a class="btn btn-outline-success btn-sm" href="{{ route('login') }}">{{ __('Login') }} <i class="fa fa-sign-in"></i></a>
+                        <a class="btn btn-outline-dark btn-sm m-4" href="{{ route('login') }}"><i class="fa fa-sign-in"></i> Login</a>
                     </li>
                     @else
                     @if(auth()->id() === 1)
                     <li class="nav-item {{ (request()->is('dashboard')) ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
+                        <a class="nav-link text-dark" href="{{ route('dashboard') }}">Dashboard</a>
                     </li>
                     @endif
 
                     <li class="nav-item {{ (request()->is('notes')) ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ route('notes') }}">My Notes</a>
+                        <a class="nav-link text-dark" href="{{ route('notes') }}">Notes</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="btn btn-outline-success btn-sm" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            {{ __('Logout') }} <i class="fa fa-sign-out"></i>
-                        </a>
+                        <a class="btn btn-outline-dark btn-sm ml-2" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fa fa-sign-out"></i> Logout</a>
 
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf

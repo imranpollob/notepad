@@ -37,7 +37,7 @@
                                     <i class="fa fa-copy"></i>
                                 </button>
 
-                                <span data-toggle="tooltip" data-placement="top" title="Password Options">
+                                <span data-toggle="tooltip" data-placement="top" title="Password options">
                                     <button type="button" class="btn btn-warning btn-sm passwordBtn" data-toggle="modal" data-target="#exampleModal"
                                             data-password="{{ $note->password }}" data-url="{{ $note->url }}">
                                         <i class="fa fa-key"></i>
@@ -111,9 +111,9 @@
                                 @method('delete')
                                 @csrf
 
-                                <button type="submit" class="btn btn-danger">YES</button>
+                                <button type="submit" class="btn btn-light btn-sm px-3">Yes</button>
                             </form>
-                            <button type="button" class="btn btn-success" data-dismiss="modal">NO</button>
+                            <button type="button" class="btn btn-dark btn-sm px-3 ml-3" data-dismiss="modal">No</button>
                         </div>
                     </div>
                 </div>

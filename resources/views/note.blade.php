@@ -14,12 +14,12 @@
 </form>
 
 <div class="bottom-panel">
-    <div id="save-status" class="badge badge-success">Start Typing</div>
+    <div id="save-status" class="badge badge-secondary">Start Typing</div>
     <div>
-        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#exampleModal">
+        <button type="button" class="btn btn-outline-dark btn-sm" data-toggle="modal" data-target="#exampleModal">
             <i class="fa fa-key"></i> Password
         </button>
-        <button type="button" class="btn btn-primary btn-sm copyToClipboard" data-toggle="tooltip" data-placement="top" title="Copy link to clipboard">
+        <button type="button" class="btn btn-outline-dark btn-sm copyToClipboard" data-toggle="tooltip" data-placement="top" title="Copy link to clipboard">
             <i class="fa fa-copy"></i> <span class="d-none d-md-inline">Copy link to clipboard</span>
         </button>
     </div>
