@@ -46,7 +46,7 @@
             </div>
 
             <div class="modal-body">
-                <form action="{{ url()->current() }}" method="post" id="note-form">
+                <form action="{{ url()->current() }}" method="post" id="note-form2">
                     @method('put')
                     @csrf
 
@@ -54,9 +54,13 @@
                         <input type="password" name="password" class="form-control" id="password" placeholder="Give a password" value="{{ $note->password }}">
                     </div>
 
-                    <button type="submit" name="update-password" class="btn btn-warning">Add or Update Password
+                    <button type="submit" name="update-password" class="btn btn-warning">
+                        {{ $note->password ? 'Update' : 'Add' }} Password
                     </button>
+
+                    @if($note->password) 
                     <button type="submit" name="delete-password" class="btn btn-success">Remove Password</button>
+                    @endif
                 </form>
             </div>
         </div>

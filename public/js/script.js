@@ -29,21 +29,36 @@ $(document).ready(function () {
 
     //user is "finished typing," do something
     function doneTyping() {
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
+        // Use jQuery to get the CSRF token and serialize the form data
+        const csrfToken = $('meta[name="csrf-token"]').attr("content");
+        const formData = $("#note-form").serialize();
 
-        $.ajax({
-            // url: '/{{ Request::path() }}',
-            type: "POST",
-            data: $('#note-form').serialize(),
-            success: function () {
-                $('#save-status').text('Saved');
-            }
-        });
+        fetch(window.location.href, {
+            // Use the current URL
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken,
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: formData,
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.text(); // or response.json() if your endpoint returns JSON
+            })
+            .then(() => {
+                $("#save-status").text("Saved"); // Use jQuery to update the save status
+            })
+            .catch((error) => {
+                console.error(
+                    "There has been a problem with your fetch operation:",
+                    error
+                );
+            });
     }
+
 
     $(function () {
         $('[data-toggle="tooltip"]').tooltip();
