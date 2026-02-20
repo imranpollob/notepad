@@ -23,4 +23,9 @@ class Notebook extends Model
     {
         return $this->hasMany(Source::class);
     }
+
+    public function conversations()
+    {
+        return $this->hasMany(Conversation::class);
+    }
 }

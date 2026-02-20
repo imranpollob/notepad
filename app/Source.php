@@ -52,4 +52,9 @@ class Source extends Model
     {
         return $this->hasMany(SourceIngestion::class);
     }
+
+    public function chunks()
+    {
+        return $this->hasMany(SourceChunk::class);
+    }
 }

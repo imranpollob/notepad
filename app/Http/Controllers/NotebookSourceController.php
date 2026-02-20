@@ -9,6 +9,7 @@ use App\SourceContent;
 use App\SourceFile;
 use App\SourceIngestion;
 use App\Jobs\ProcessSourceIngestion;
+use App\Jobs\IndexSourceChunks;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -48,6 +49,8 @@ class NotebookSourceController extends Controller
                 'extracted_at' => now(),
             ]
         );
+
+        IndexSourceChunks::dispatch($source->id);
 
         return redirect()->route('notebooks.show', ['notebook' => $notebook->id])
             ->with('success', 'Note attached to notebook.');

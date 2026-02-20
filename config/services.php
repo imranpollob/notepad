@@ -52,5 +52,11 @@ return [
         'client_id' => env ( 'TWITTER_CLIENT_ID' ),
         'client_secret' => env ( 'TWITTER_CLIENT_SECRET' ),
         'redirect' => env ( 'TWITTER_REDIRECT' )
-    ]
+    ],
+
+    'openai' => [
+        'api_key' => env('OPENAI_API_KEY', ''),
+        'embedding_model' => env('OPENAI_EMBEDDING_MODEL', 'text-embedding-3-small'),
+        'chat_model' => env('OPENAI_CHAT_MODEL', 'gpt-4o-mini'),
+    ],
 ];

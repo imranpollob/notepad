@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Jobs\IndexSourceChunks;
 use App\Source;
 use App\SourceContent;
 use App\SourceFile;
@@ -54,6 +55,8 @@ class SourceIngestionProcessor
                 'status' => 'ready',
                 'error_message' => null,
             ]);
+
+            IndexSourceChunks::dispatch($source->id);
 
             $ingestion->update([
                 'status' => 'completed',

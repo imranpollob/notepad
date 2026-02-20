@@ -8,7 +8,10 @@
                 <p class="text-muted mt-2 mb-0">{{ $notebook->description }}</p>
             @endif
         </div>
-        <a href="{{ route('notebooks.edit', ['notebook' => $notebook->id]) }}" class="btn btn-outline-primary btn-sm">Edit Notebook</a>
+        <div>
+            <a href="{{ route('notebooks.chat', ['notebook' => $notebook->id]) }}" class="btn btn-outline-dark btn-sm mr-2">Open Chat</a>
+            <a href="{{ route('notebooks.edit', ['notebook' => $notebook->id]) }}" class="btn btn-outline-primary btn-sm">Edit Notebook</a>
+        </div>
     </div>
 
     <div class="card mb-4">
