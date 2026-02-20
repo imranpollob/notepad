@@ -39,16 +39,61 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
 
+    <style>
+        .app-navbar {
+            background: linear-gradient(135deg, #ffffff 0%, #f4f9ff 60%, #fff8ec 100%);
+            border-bottom: 1px solid #e9edf2;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        .app-navbar .navbar-brand {
+            margin-right: 0.75rem;
+        }
+
+        .app-navbar .btn-new-note {
+            border-width: 2px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .app-navbar .main-nav-link {
+            color: #2b2b2b;
+            font-weight: 600;
+            padding: 7px 12px;
+            border: 1px solid transparent;
+            transition: all 0.15s ease;
+        }
+
+        .app-navbar .main-nav-link:hover {
+            color: #111;
+            border-color: #dce8f7;
+            background-color: #f5f9ff;
+        }
+
+        .app-navbar .nav-item.active .main-nav-link {
+            color: #0c3a67;
+            border-color: #c7dbf0;
+            background-color: #eaf4ff;
+        }
+
+        .app-navbar .btn-login,
+        .app-navbar .btn-logout {
+            border-width: 1.5px;
+        }
+    </style>
 
     @yield('stylesheet')
 </head>
 
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand navbar-light bg-white shadow-sm">
+        <nav class="navbar navbar-expand navbar-light app-navbar">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
-                    <button type="button" class="btn btn-outline-dark btn-sm b-3"><i class="fa fa-plus"></i> <b>NEW NOTE</b></button>
+                    <button type="button" class="btn btn-outline-dark btn-sm btn-new-note"><i class="fa fa-plus"></i> NEW NOTE</button>
                 </a>
 
                 <!-- Left Side Of Navbar -->
@@ -61,25 +106,25 @@
                     <!-- Authentication Links -->
                     @guest
                     <li class="nav-item">
-                        <a class="btn btn-outline-dark btn-sm mx-4" href="{{ route('login') }}"><i class="fa fa-sign-in"></i> Login</a>
+                        <a class="btn btn-outline-dark btn-sm mx-2 btn-login" href="{{ route('login') }}"><i class="fa fa-sign-in"></i> Login</a>
                     </li>
                     @else
                     @if(auth()->id() === 1)
                     <li class="nav-item {{ (request()->is('dashboard')) ? 'active' : '' }}">
-                        <a class="nav-link text-dark" href="{{ route('dashboard') }}">Dashboard</a>
+                        <a class="nav-link main-nav-link" href="{{ route('dashboard') }}">Dashboard</a>
                     </li>
                     @endif
 
                     <li class="nav-item {{ (request()->is('notes')) ? 'active' : '' }}">
-                        <a class="nav-link text-dark" href="{{ route('notes') }}">Notes</a>
+                        <a class="nav-link main-nav-link" href="{{ route('notes') }}">Notes</a>
                     </li>
 
                     <li class="nav-item {{ (request()->is('notebooks*')) ? 'active' : '' }}">
-                        <a class="nav-link text-dark" href="{{ route('notebooks.index') }}">Notebooks</a>
+                        <a class="nav-link main-nav-link" href="{{ route('notebooks.index') }}">Notebooks</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="btn btn-outline-dark btn-sm ml-2" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fa fa-sign-out"></i> Logout</a>
+                        <a class="btn btn-outline-dark btn-sm ml-2 btn-logout" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fa fa-sign-out"></i> Logout</a>
 
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf

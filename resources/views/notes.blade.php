@@ -46,6 +46,19 @@
             font-size: 12px;
             letter-spacing: 0.2px;
         }
+
+        .note-actions {
+            display: flex;
+            width: 100%;
+        }
+
+        .note-actions .action-slot {
+            flex: 1 1 25%;
+        }
+
+        .note-actions .btn {
+            width: 100%;
+        }
     </style>
 @endsection
 
@@ -120,30 +133,32 @@
                                 Updated {{ $note->updated_at->diffForHumans() }}
                             </div>
 
-                            <div class="btn-group" role="group">
-                                <a href="{{ route('note.show', ['url' => $note->url]) }}" target="_blank" class="btn btn-outline-dark btn-sm" data-toggle="tooltip" data-placement="top" title="Open note">
+                            <div class="note-actions" role="group">
+                                <a href="{{ route('note.show', ['url' => $note->url]) }}" target="_blank" class="btn btn-outline-dark btn-sm action-slot" data-toggle="tooltip" data-placement="top" title="Open note">
                                     <i class="fa fa-external-link"></i>
                                 </a>
 
-                                <button type="button" class="btn btn-outline-dark btn-sm copyToClipboard"
+                                <button type="button" class="btn btn-outline-dark btn-sm copyToClipboard action-slot"
                                         data-link="{{ route('note.show', ['url' => $note->url]) }}"
                                         data-toggle="tooltip" data-placement="top" title="Copy link to clipboard">
                                     <i class="fa fa-copy"></i>
                                 </button>
 
-                                <button type="button" class="btn btn-outline-primary btn-sm passwordBtn"
-                                        data-toggle="modal" data-target="#exampleModal"
-                                        data-placement="top" title="Password options"
-                                        data-url="{{ $note->url }}">
-                                    <i class="fa fa-key"></i>
-                                </button>
+                                <span class="action-slot" data-toggle="tooltip" data-placement="top" title="Password options">
+                                    <button type="button" class="btn btn-outline-primary btn-sm passwordBtn"
+                                            data-toggle="modal" data-target="#exampleModal"
+                                            data-url="{{ $note->url }}">
+                                        <i class="fa fa-key"></i>
+                                    </button>
+                                </span>
 
-                                <button type="button" class="btn btn-outline-danger btn-sm deleteNoteBtn"
-                                        data-toggle="modal" data-target="#deleteNoteModal"
-                                        data-placement="top" title="Delete note"
-                                        data-url="{{ route('note.destroy', ['url' => $note->url]) }}">
-                                    <i class="fa fa-trash"></i>
-                                </button>
+                                <span class="action-slot" data-toggle="tooltip" data-placement="top" title="Delete note">
+                                    <button type="button" class="btn btn-outline-danger btn-sm deleteNoteBtn"
+                                            data-toggle="modal" data-target="#deleteNoteModal"
+                                            data-url="{{ route('note.destroy', ['url' => $note->url]) }}">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </span>
                             </div>
                         </div>
                     </div>

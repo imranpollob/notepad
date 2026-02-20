@@ -1,23 +1,50 @@
 @extends('layouts.app')
 
+@section('stylesheet')
+    <style>
+        .notebook-hero {
+            background: linear-gradient(140deg, #f5f9ff 0%, #fff 65%, #fff7ec 100%);
+            border: 1px solid #e9edf2;
+            padding: 18px;
+        }
+
+        .notebook-panel {
+            border: 1px solid #e9ecef;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .source-card {
+            border: 1px solid #ececec;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
+        }
+    </style>
+@endsection
+
 @section('content')
-    <div class="d-flex justify-content-between align-items-start mb-3">
-        <div>
-            <h3 class="m-0">{{ $notebook->name }}</h3>
-            @if($notebook->description)
-                <p class="text-muted mt-2 mb-0">{{ $notebook->description }}</p>
-            @endif
-        </div>
-        <div>
-            <a href="{{ route('notebooks.chat', ['notebook' => $notebook->id]) }}" class="btn btn-outline-dark btn-sm mr-2">Open Chat</a>
-            <a href="{{ route('notebooks.edit', ['notebook' => $notebook->id]) }}" class="btn btn-outline-primary btn-sm">Edit Notebook</a>
+    <div class="notebook-hero rounded mb-4">
+        <div class="d-flex justify-content-between align-items-start flex-wrap">
+            <div class="mb-2 mb-md-0 pr-md-3">
+                <h3 class="m-0">{{ $notebook->name }}</h3>
+                @if($notebook->description)
+                    <p class="text-muted mt-2 mb-0">{{ $notebook->description }}</p>
+                @else
+                    <p class="text-muted mt-2 mb-0">No notebook description yet.</p>
+                @endif
+            </div>
+            <div class="d-flex">
+                <a href="{{ route('notebooks.chat', ['notebook' => $notebook->id]) }}" class="btn btn-dark btn-sm mr-2">Open Chat</a>
+                <a href="{{ route('notebooks.edit', ['notebook' => $notebook->id]) }}" class="btn btn-outline-primary btn-sm">Edit Notebook</a>
+            </div>
         </div>
     </div>
 
-    <div class="card mb-4">
+    <div class="card notebook-panel mb-4">
         <div class="card-body">
-            <h5 class="card-title mb-3">Sharing</h5>
-            <p class="mb-2">Visibility: <span class="badge badge-secondary text-uppercase">{{ $notebook->visibility }}</span></p>
+            <div class="d-flex justify-content-between align-items-center flex-wrap mb-2">
+                <h5 class="card-title mb-2 mb-md-0">Sharing</h5>
+                <span class="badge badge-secondary text-uppercase">{{ $notebook->visibility }}</span>
+            </div>
+            <p class="text-muted">Control who can open this notebook by link.</p>
 
             @if(in_array($notebook->visibility, ['public', 'unlisted']))
                 <div class="input-group mb-2">
@@ -38,7 +65,7 @@
 
     <div class="row">
         <div class="col-lg-4 mb-4">
-            <div class="card mb-3">
+            <div class="card notebook-panel mb-3">
                 <div class="card-body">
                     <h6 class="card-title">Attach Existing Note</h6>
                     <form action="{{ route('notebooks.sources.note', ['notebook' => $notebook->id]) }}" method="post">
@@ -56,7 +83,7 @@
                 </div>
             </div>
 
-            <div class="card mb-3">
+            <div class="card notebook-panel mb-3">
                 <div class="card-body">
                     <h6 class="card-title">Upload File (PDF/DOC/DOCX)</h6>
                     <form action="{{ route('notebooks.sources.file', ['notebook' => $notebook->id]) }}" method="post" enctype="multipart/form-data">
@@ -72,7 +99,7 @@
                 </div>
             </div>
 
-            <div class="card">
+            <div class="card notebook-panel">
                 <div class="card-body">
                     <h6 class="card-title">Attach URL</h6>
                     <form action="{{ route('notebooks.sources.url', ['notebook' => $notebook->id]) }}" method="post">
@@ -90,7 +117,7 @@
         </div>
 
         <div class="col-lg-8">
-            <div class="card">
+            <div class="card notebook-panel">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="card-title mb-0">Sources</h5>
@@ -109,58 +136,54 @@
                     @if($sources->isEmpty())
                         <p class="text-muted m-0">No sources attached yet.</p>
                     @else
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-sm">
-                                <thead>
-                                <tr>
-                                    <th>Type</th>
-                                    <th>Title</th>
-                                    <th>Status</th>
-                                    <th>Reference</th>
-                                    <th>Action</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach($sources as $source)
-                                    <tr>
-                                        <td class="text-uppercase">{{ $source->source_type }}</td>
-                                        <td>{{ $source->title ?: '-' }}</td>
-                                        <td>
-                                            <span class="badge badge-light">{{ $source->status }}</span>
-                                            @if($source->error_message)
-                                                <div class="small text-danger mt-1">{{ $source->error_message }}</div>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @if($source->source_type === 'note' && $source->note)
-                                                <a href="{{ route('note.show', ['url' => $source->note->url]) }}" target="_blank">{{ $source->note->title ?: $source->note->url }}</a>
-                                            @elseif($source->source_type === 'url' && $source->origin_url)
-                                                <a href="{{ $source->origin_url }}" target="_blank">{{ $source->origin_url }}</a>
-                                            @elseif($source->source_type === 'file' && $source->files->isNotEmpty())
-                                                {{ $source->files->first()->original_name }}
-                                            @else
-                                                -
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <div class="d-flex">
-                                                @if($source->status === 'failed' && in_array($source->source_type, ['file', 'url']))
-                                                    <form action="{{ route('notebooks.sources.retry', ['notebook' => $notebook->id, 'source' => $source->id]) }}" method="post" class="mr-2">
+                        <div class="row">
+                            @foreach($sources as $source)
+                                <div class="col-12 mb-3">
+                                    <div class="card source-card">
+                                        <div class="card-body py-3">
+                                            <div class="d-flex justify-content-between align-items-start flex-wrap">
+                                                <div class="pr-3">
+                                                    <div class="mb-1">
+                                                        <span class="badge badge-light text-uppercase mr-2">{{ $source->source_type }}</span>
+                                                        <strong>{{ $source->title ?: 'Untitled source' }}</strong>
+                                                    </div>
+                                                    <div class="small text-muted mb-2">
+                                                        Status:
+                                                        <span class="badge badge-secondary">{{ $source->status }}</span>
+                                                    </div>
+                                                    @if($source->error_message)
+                                                        <div class="small text-danger mb-2">{{ $source->error_message }}</div>
+                                                    @endif
+                                                    <div class="small">
+                                                        @if($source->source_type === 'note' && $source->note)
+                                                            <a href="{{ route('note.show', ['url' => $source->note->url]) }}" target="_blank">{{ $source->note->title ?: $source->note->url }}</a>
+                                                        @elseif($source->source_type === 'url' && $source->origin_url)
+                                                            <a href="{{ $source->origin_url }}" target="_blank">{{ $source->origin_url }}</a>
+                                                        @elseif($source->source_type === 'file' && $source->files->isNotEmpty())
+                                                            {{ $source->files->first()->original_name }}
+                                                        @else
+                                                            -
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex mt-2 mt-md-0">
+                                                    @if($source->status === 'failed' && in_array($source->source_type, ['file', 'url']))
+                                                        <form action="{{ route('notebooks.sources.retry', ['notebook' => $notebook->id, 'source' => $source->id]) }}" method="post" class="mr-2">
+                                                            @csrf
+                                                            <button type="submit" class="btn btn-outline-primary btn-sm">Retry</button>
+                                                        </form>
+                                                    @endif
+                                                    <form action="{{ route('notebooks.sources.destroy', ['notebook' => $notebook->id, 'source' => $source->id]) }}" method="post" onsubmit="return confirm('Remove this source from notebook?');">
                                                         @csrf
-                                                        <button type="submit" class="btn btn-outline-primary btn-sm">Retry</button>
+                                                        @method('delete')
+                                                        <button type="submit" class="btn btn-outline-danger btn-sm">Remove</button>
                                                     </form>
-                                                @endif
-                                                <form action="{{ route('notebooks.sources.destroy', ['notebook' => $notebook->id, 'source' => $source->id]) }}" method="post">
-                                                    @csrf
-                                                    @method('delete')
-                                                    <button type="submit" class="btn btn-outline-danger btn-sm">Remove</button>
-                                                </form>
+                                                </div>
                                             </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
                     @endif
                 </div>
@@ -174,6 +197,16 @@
         $(document).ready(function () {
             $('.copy-share-link').on('click', function () {
                 const input = $(this).closest('.input-group').find('input');
+                const text = input.val();
+                if (!text) {
+                    return;
+                }
+
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text);
+                    return;
+                }
+
                 input.trigger('select');
                 document.execCommand('copy');
             });
