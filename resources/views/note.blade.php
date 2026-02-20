@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<form action="{{ url()->current() }}" method="post" id="note-form">
+<form action="{{ url()->current() }}" method="post" id="note-form" data-editable="{{ $canEdit ? '1' : '0' }}">
     @csrf
 
     <div class="form-group">
@@ -14,16 +14,24 @@
 </form>
 
 <div class="bottom-panel">
-    <div id="save-status" class="badge badge-secondary">Start Typing</div>
+    <div id="save-status" class="badge badge-secondary">{{ $canEdit ? 'Start Typing' : 'Read only' }}</div>
     <div>
+        @if($canEdit)
         <button type="button" class="btn btn-outline-dark btn-sm" data-toggle="modal" data-target="#exampleModal">
             <i class="fa fa-key"></i> Password
         </button>
+        @endif
         <button type="button" class="btn btn-outline-dark btn-sm copyToClipboard" data-toggle="tooltip" data-placement="top" title="Copy link to clipboard">
             <i class="fa fa-copy"></i> <span class="d-none d-md-inline">Copy link to clipboard</span>
         </button>
     </div>
 </div>
+
+@if(!$canEdit)
+<div class="alert alert-warning mt-3" role="alert">
+    This note is read-only for your account.
+</div>
+@endif
 
 <div class="site-info text-muted">
     <h1>Note online is a free tool for storing and sharing you notes.</h1>
@@ -51,7 +59,7 @@
                     @csrf
 
                     <div class="form-group">
-                        <input type="password" name="password" class="form-control" id="password" placeholder="Give a password" value="{{ $note->password }}">
+                        <input type="password" name="password" class="form-control" id="password" placeholder="Give a password">
                     </div>
 
                     <button type="submit" name="update-password" class="btn btn-sm btn-dark">

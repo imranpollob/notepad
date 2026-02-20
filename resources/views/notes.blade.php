@@ -28,7 +28,7 @@
                 <tbody>
                 @foreach($notes as $note)
                     <tr>
-                        <td><a href="/{{ $note->url }}" target="_blank" class="note-url">{{ $note->title ?? $note->url }}</a></td>
+                        <td><a href="{{ route('note.show', ['url' => $note->url]) }}" target="_blank" class="note-url">{{ $note->title ?? $note->url }}</a></td>
                         <td class="text-muted">{{ $note->updated_at->diffForHumans() }}</td>
                         <td class="d-flex action-buttons">
 
@@ -39,14 +39,14 @@
 
                                 <span data-toggle="tooltip" data-placement="top" title="Password options">
                                     <button type="button" class="btn btn-outline-primary btn-sm passwordBtn" data-toggle="modal" data-target="#exampleModal"
-                                            data-password="{{ $note->password }}" data-url="{{ $note->url }}">
+                                            data-url="{{ $note->url }}">
                                         <i class="fa fa-key"></i>
                                     </button>
                                 </span>
 
                                 <span data-toggle="tooltip" data-placement="top" title="Delete note">
                                     <button type="button" class="btn btn-outline-danger btn-sm deleteNoteBtn" data-toggle="modal" data-target="#deleteNoteModal"
-                                            data-url="{{ $note->url }}">
+                                            data-url="{{ route('note.destroy', ['url' => $note->url]) }}">
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </span>
@@ -154,14 +154,13 @@
                 const button = $(event.relatedTarget);
                 const modal = $(this);
                 modal.find('#url').val(button.data('url'));
-                modal.find('#password').val(button.data('password'));
+                modal.find('#password').val('');
             });
 
             $('#deleteNoteModal').on('show.bs.modal', function (event) {
                 const button = $(event.relatedTarget);
                 const modal = $(this);
                 modal.find('form').attr('action', button.data('url'));
-                modal.find('#password').val(button.data('password'));
             });
 
         });

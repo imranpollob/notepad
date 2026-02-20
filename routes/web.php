@@ -19,8 +19,22 @@ Route::get('/callback/{provider}', 'SocialController@callback');
 Route::get('/dashboard', 'HomeController@dashboard')->middleware(['auth', 'admin'])->name('dashboard');
 Route::delete('/dashboard', 'HomeController@delete')->middleware(['auth', 'admin'])->name('dashboard');
 
-Route::get('{url}', 'NotesController@index');
-Route::post('{url}', 'NotesController@store');
-Route::post('{url}/password', 'NotesController@password');
-Route::put('{url}', 'NotesController@update');
-Route::delete('{url}', 'NotesController@destroy');
+Route::prefix('n')->group(function () {
+    Route::get('{url}', 'NotesController@index')
+        ->where('url', '[A-Za-z0-9]+')
+        ->name('note.show');
+    Route::post('{url}', 'NotesController@store')
+        ->where('url', '[A-Za-z0-9]+')
+        ->name('note.store');
+    Route::post('{url}/password', 'NotesController@password')
+        ->where('url', '[A-Za-z0-9]+')
+        ->name('note.password');
+    Route::put('{url}', 'NotesController@update')
+        ->where('url', '[A-Za-z0-9]+')
+        ->name('note.update');
+    Route::delete('{url}', 'NotesController@destroy')
+        ->where('url', '[A-Za-z0-9]+')
+        ->name('note.destroy');
+});
+
+Route::get('{url}', 'NotesController@legacyRedirect')->where('url', '[A-Za-z0-9]+');

@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    const editable = String($('#note-form').data('editable')) === '1';
 
     //setup before functions
     let typingTimer;                //timer identifier
@@ -10,6 +11,10 @@ $(document).ready(function () {
         placeholder: "Just dump data!!",
         callbacks: {
             onChange: function () {
+                if (!editable) {
+                    return;
+                }
+
                 $('#save-status').text('Saving ...');
                 clearTimeout(typingTimer);
 
@@ -19,8 +24,17 @@ $(document).ready(function () {
         followingToolbar: true
     });
 
+    if (!editable) {
+        $('#data').summernote('disable');
+        $('#title').prop('disabled', true);
+    }
+
     //on keyup, start the countdown
     $('#title').keyup(function () {
+        if (!editable) {
+            return;
+        }
+
         $('#save-status').text('Saving ...');
         clearTimeout(typingTimer);
 
@@ -40,6 +54,9 @@ $(document).ready(function () {
             data: $('#note-form').serialize(),
             success: function () {
                 $('#save-status').text('Saved');
+            },
+            error: function () {
+                $('#save-status').text('Save failed');
             }
         });
     }

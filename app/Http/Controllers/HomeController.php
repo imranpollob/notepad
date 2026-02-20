@@ -24,7 +24,7 @@ class HomeController extends Controller
             }
         }
 
-        return redirect($random_string);
+        return redirect()->route('note.show', ['url' => $random_string]);
 
     }
 

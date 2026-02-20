@@ -14,4 +14,9 @@ class Notes extends Model
         'owner_id',
         'is_active'
     ];
+
+    public function sources()
+    {
+        return $this->hasMany(Source::class, 'note_id');
+    }
 }

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Notes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 
 class NotesController extends Controller
 {
@@ -21,30 +21,42 @@ class NotesController extends Controller
      */
     public function index(Request $request, $url)
     {
+        $url = $this->normalizeUrl($url);
+
+        if (!$url) {
+            return redirect()->route('home');
+        }
 
         $note = Notes::where('url', $url)->first();
 
         if (!$note) {
-
-            $new_url = preg_replace("/[^a-zA-Z0-9]+/", '', $url);
-
-            if ($new_url !== $url) {
-                return redirect($new_url);
-            }
-
             Notes::create([
                 'url' => $url,
                 'owner_id' => Auth::id() ?? null
             ]);
 
-            return redirect($url);
+            return redirect()->route('note.show', ['url' => $url]);
         }
 
-        if ($note->password && (!session('note_password') || session('note_password') !== $note->password)) {
-            return view('password');
+        if ($note->password && !$this->passwordMatches($note->password, (string) session('note_password'))) {
+            return view('password', ['note' => $note]);
         }
 
-        return view('note', ['note' => $note]);
+        return view('note', [
+            'note' => $note,
+            'canEdit' => $this->canMutate($note),
+        ]);
+    }
+
+    public function legacyRedirect(string $url)
+    {
+        $url = $this->normalizeUrl($url);
+
+        if (!$url) {
+            return redirect()->route('home');
+        }
+
+        return redirect()->route('note.show', ['url' => $url]);
     }
 
     /**
@@ -63,15 +75,26 @@ class NotesController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, string $url)
     {
-        Notes::where('url', $request->path())
-            ->update([
-                'data' => $request->data,
-                'title' => $request->title,
-            ]);
+        $url = $this->normalizeUrl($url);
+        $note = Notes::where('url', $url)->first();
 
-        // return redirect($request->url());
+        if (!$note) {
+            $note = Notes::create([
+                'url' => $url,
+                'owner_id' => Auth::id() ?? null,
+            ]);
+        }
+
+        $this->ensureCanMutate($note);
+
+        $note->update([
+            'data' => $request->data,
+            'title' => $request->title,
+        ]);
+
+        return response()->noContent();
     }
 
     /**
@@ -102,23 +125,36 @@ class NotesController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request, string $url)
     {
+        $url = $this->normalizeUrl($url);
+        $note = Notes::where('url', $url)->first();
+
+        if (!$note) {
+            return redirect()->route('home');
+        }
+
+        $this->ensureCanMutate($note);
+
         if ($request->has('update-password')) {
-            Notes::where('url', $request->path())
-                ->update([
-                    'password' => $request->password,
-                ]);
+            $password = (string) $request->password;
+
+            if ($password !== '') {
+                $password = Hash::make($password);
+            }
+
+            $note->update([
+                'password' => $password ?: null,
+            ]);
         }
 
         if ($request->has('delete-password')) {
-            Notes::where('url', $request->path())
-                ->update([
-                    'password' => null,
-                ]);
+            $note->update([
+                'password' => null,
+            ]);
         }
 
-        return redirect($request->url());
+        return redirect()->route('note.show', ['url' => $url]);
     }
 
     /**
@@ -129,18 +165,36 @@ class NotesController extends Controller
      */
     public function updateAuthorized(Request $request)
     {
+        $url = $this->normalizeUrl((string) $request->url);
+
+        if (!$url) {
+            return redirect()->back();
+        }
+
+        $note = Notes::where('url', $url)
+            ->where('owner_id', Auth::id())
+            ->first();
+
+        if (!$note) {
+            abort(403);
+        }
+
         if ($request->has('update-password')) {
-            Notes::where('url', $request->url)
-                ->update([
-                    'password' => $request->password,
-                ]);
+            $password = (string) $request->password;
+
+            if ($password !== '') {
+                $password = Hash::make($password);
+            }
+
+            $note->update([
+                'password' => $password ?: null,
+            ]);
         }
 
         if ($request->has('delete-password')) {
-            Notes::where('url', $request->url)
-                ->update([
-                    'password' => null,
-                ]);
+            $note->update([
+                'password' => null,
+            ]);
         }
 
         return redirect()->back();
@@ -152,10 +206,17 @@ class NotesController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request, string $url)
     {
-        Notes::where('url', $request->path())
-            ->delete();
+        $note = Notes::where('url', $this->normalizeUrl($url))->first();
+
+        if (!$note) {
+            return redirect('/notes');
+        }
+
+        $this->ensureCanMutate($note);
+
+        $note->delete();
 
         return redirect('/notes');
     }
@@ -167,16 +228,74 @@ class NotesController extends Controller
      */
     public function password(Request $request, $url)
     {
-        $note = Notes::where('url', $url)->first();
+        $note = Notes::where('url', $this->normalizeUrl($url))->first();
 
-        if (!$note) return redirect('/');
+        if (!$note) {
+            return redirect()->route('home');
+        }
 
-        if ($note->password && $request->password !== $note->password) {
-            return redirect($url)->with('error', 'Oops! Password is not right.');
+        if ($note->password && !$this->passwordMatches($note->password, (string) $request->password)) {
+            return redirect()->route('note.show', ['url' => $note->url])->with('error', 'Oops! Password is not right.');
+        }
+
+        if ($note->password && !$this->isHashedValue($note->password)) {
+            $note->update([
+                'password' => Hash::make((string) $request->password),
+            ]);
         }
 
         session(['note_password' => $request->password]);
 
-        return redirect($url);
+        return redirect()->route('note.show', ['url' => $note->url]);
+    }
+
+    private function normalizeUrl(string $url): string
+    {
+        return preg_replace("/[^a-zA-Z0-9]+/", '', $url);
+    }
+
+    private function ensureCanMutate(Notes $note): void
+    {
+        if (!$this->canMutate($note)) {
+            abort(403);
+        }
+    }
+
+    private function canMutate(Notes $note): bool
+    {
+        if ($note->owner_id && !$this->isOwner($note)) {
+            return false;
+        }
+
+        if ($note->password && !$this->isOwner($note)) {
+            return $this->passwordMatches($note->password, (string) session('note_password'));
+        }
+
+        return true;
+    }
+
+    private function isOwner(Notes $note): bool
+    {
+        return Auth::check() && (int) $note->owner_id === (int) Auth::id();
+    }
+
+    private function passwordMatches(string $storedPassword, string $inputPassword): bool
+    {
+        if ($inputPassword === '') {
+            return false;
+        }
+
+        if ($this->isHashedValue($storedPassword)) {
+            return Hash::check($inputPassword, $storedPassword);
+        }
+
+        return hash_equals($storedPassword, $inputPassword);
+    }
+
+    private function isHashedValue(string $value): bool
+    {
+        $hashInfo = Hash::info($value);
+
+        return ($hashInfo['algo'] ?? 0) !== 0;
     }
 }
