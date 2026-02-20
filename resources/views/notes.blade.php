@@ -1,7 +1,52 @@
 @extends('layouts.app')
 
 @section('stylesheet')
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
+    <style>
+        .notes-toolbar {
+            background: linear-gradient(135deg, #fff8e1 0%, #fff 60%, #eaf6ff 100%);
+            border: 1px solid #ececec;
+            padding: 14px;
+        }
+
+        .notes-grid .note-col {
+            margin-bottom: 1rem;
+        }
+
+        .note-card {
+            border: 1px solid #e6e6e6;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            height: 100%;
+        }
+
+        .note-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.09);
+        }
+
+        .note-card-title {
+            color: #1b1b1b;
+            font-weight: 600;
+            line-height: 1.3;
+            text-decoration: none;
+        }
+
+        .note-card-title:hover {
+            text-decoration: underline;
+            color: #000;
+        }
+
+        .note-preview {
+            color: #555;
+            min-height: 66px;
+            white-space: pre-wrap;
+        }
+
+        .notes-count-badge {
+            font-size: 12px;
+            letter-spacing: 0.2px;
+        }
+    </style>
 @endsection
 
 @section('content')
@@ -16,50 +61,103 @@
             <h3 class="user-note-heading">{{ Auth::user()->name }}'s Notes</h3>
         </div>
 
-        <div class="row">
-            <table class="table table-bordered table-striped table-hover" id="notesTable" style="width:100%">
-                <thead>
-                <tr>
-                    <th>Note</th>
-                    <th>Modified</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach($notes as $note)
-                    <tr>
-                        <td><a href="{{ route('note.show', ['url' => $note->url]) }}" target="_blank" class="note-url">{{ $note->title ?? $note->url }}</a></td>
-                        <td class="text-muted">{{ $note->updated_at->diffForHumans() }}</td>
-                        <td class="d-flex action-buttons">
+        <div class="notes-toolbar rounded mb-3">
+            <div class="row align-items-end">
+                <div class="col-md-5 mb-2 mb-md-0">
+                    <label for="note-search" class="small text-muted mb-1">Search notes</label>
+                    <input type="text" id="note-search" class="form-control" placeholder="Search by title or content">
+                </div>
+                <div class="col-md-3 mb-2 mb-md-0">
+                    <label for="note-sort" class="small text-muted mb-1">Sort</label>
+                    <select id="note-sort" class="form-control">
+                        <option value="updated_desc">Recently updated</option>
+                        <option value="updated_asc">Oldest updated</option>
+                        <option value="title_asc">Title A-Z</option>
+                        <option value="title_desc">Title Z-A</option>
+                    </select>
+                </div>
+                <div class="col-md-2 mb-2 mb-md-0">
+                    <div class="form-check mt-4">
+                        <input class="form-check-input" type="checkbox" id="locked-only">
+                        <label class="form-check-label" for="locked-only">Locked only</label>
+                    </div>
+                </div>
+                <div class="col-md-2 text-md-right">
+                    <span class="badge badge-dark notes-count-badge" id="notes-count">
+                        {{ $notes->count() }} notes
+                    </span>
+                </div>
+            </div>
+        </div>
 
-                            <div class="btn-group" role="group" aria-label="Basic example">
-                                <button type="button" class="btn btn-outline-dark btn-sm copyToClipboard" data-toggle="tooltip" data-placement="top" title="Copy link to clipboard">
+        <div class="row notes-grid" id="notes-grid">
+            @forelse($notes as $note)
+                @php
+                    $plainContent = trim(strip_tags((string) ($note->data ?? '')));
+                    $preview = \Illuminate\Support\Str::limit($plainContent, 190);
+                    $title = $note->title ?: $note->url;
+                    $isLocked = !empty($note->password);
+                @endphp
+                <div class="col-sm-6 col-lg-4 note-col"
+                     data-title="{{ strtolower($title) }}"
+                     data-content="{{ strtolower($plainContent) }}"
+                     data-updated="{{ $note->updated_at->timestamp }}"
+                     data-locked="{{ $isLocked ? '1' : '0' }}">
+                    <div class="card note-card">
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <a href="{{ route('note.show', ['url' => $note->url]) }}" target="_blank" class="note-card-title note-url">
+                                    {{ $title }}
+                                </a>
+                                @if($isLocked)
+                                    <span class="badge badge-primary ml-2"><i class="fa fa-lock"></i></span>
+                                @endif
+                            </div>
+
+                            <p class="note-preview mb-3">{{ $preview !== '' ? $preview : 'No preview available yet.' }}</p>
+
+                            <div class="small text-muted mb-3 mt-auto">
+                                Updated {{ $note->updated_at->diffForHumans() }}
+                            </div>
+
+                            <div class="btn-group" role="group">
+                                <a href="{{ route('note.show', ['url' => $note->url]) }}" target="_blank" class="btn btn-outline-dark btn-sm" data-toggle="tooltip" data-placement="top" title="Open note">
+                                    <i class="fa fa-external-link"></i>
+                                </a>
+
+                                <button type="button" class="btn btn-outline-dark btn-sm copyToClipboard"
+                                        data-link="{{ route('note.show', ['url' => $note->url]) }}"
+                                        data-toggle="tooltip" data-placement="top" title="Copy link to clipboard">
                                     <i class="fa fa-copy"></i>
                                 </button>
 
-                                <span data-toggle="tooltip" data-placement="top" title="Password options">
-                                    <button type="button" class="btn btn-outline-primary btn-sm passwordBtn" data-toggle="modal" data-target="#exampleModal"
-                                            data-url="{{ $note->url }}">
-                                        <i class="fa fa-key"></i>
-                                    </button>
-                                </span>
+                                <button type="button" class="btn btn-outline-primary btn-sm passwordBtn"
+                                        data-toggle="modal" data-target="#exampleModal"
+                                        data-placement="top" title="Password options"
+                                        data-url="{{ $note->url }}">
+                                    <i class="fa fa-key"></i>
+                                </button>
 
-                                <span data-toggle="tooltip" data-placement="top" title="Delete note">
-                                    <button type="button" class="btn btn-outline-danger btn-sm deleteNoteBtn" data-toggle="modal" data-target="#deleteNoteModal"
-                                            data-url="{{ route('note.destroy', ['url' => $note->url]) }}">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </span>
-
+                                <button type="button" class="btn btn-outline-danger btn-sm deleteNoteBtn"
+                                        data-toggle="modal" data-target="#deleteNoteModal"
+                                        data-placement="top" title="Delete note"
+                                        data-url="{{ route('note.destroy', ['url' => $note->url]) }}">
+                                    <i class="fa fa-trash"></i>
+                                </button>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="col-12">
+                    <div class="alert alert-light border text-muted mb-0">No notes found yet.</div>
+                </div>
+            @endforelse
+        </div>
 
-                        </td>
-                    </tr>
-                @endforeach
-                </tbody>
-            </table>
-
-            <input type="text" id="myInput">
+        <div class="alert alert-light border text-muted d-none" id="notes-empty-state">
+            No notes match your current filters.
+        </div>
 
             <!-- Modal -->
             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -124,30 +222,104 @@
 @endsection
 
 @section('javascript')
-    <script defer src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
-    <script defer src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
     <script>
         $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
 
-            $('#notesTable').dataTable({
-                "order": [],
-                "pageLength": 25,
-                responsive: true
-            });
+            const grid = $('#notes-grid');
+            const noteCols = () => grid.find('.note-col');
+
+            function applyFilters() {
+                const query = ($('#note-search').val() || '').toLowerCase().trim();
+                const sort = $('#note-sort').val();
+                const lockedOnly = $('#locked-only').is(':checked');
+                const cols = noteCols().get();
+                const visible = [];
+
+                cols.forEach(function (col) {
+                    const $col = $(col);
+                    const title = ($col.data('title') || '').toString();
+                    const content = ($col.data('content') || '').toString();
+                    const isLocked = ($col.data('locked') || 0).toString() === '1';
+                    const matchesQuery = query === '' || title.includes(query) || content.includes(query);
+                    const matchesLock = !lockedOnly || isLocked;
+                    const isVisible = matchesQuery && matchesLock;
+                    $col.toggle(isVisible);
+                    if (isVisible) {
+                        visible.push(col);
+                    }
+                });
+
+                visible.sort(function (a, b) {
+                    const $a = $(a);
+                    const $b = $(b);
+                    const aUpdated = parseInt($a.data('updated'), 10) || 0;
+                    const bUpdated = parseInt($b.data('updated'), 10) || 0;
+                    const aTitle = (($a.data('title') || '').toString());
+                    const bTitle = (($b.data('title') || '').toString());
+
+                    if (sort === 'updated_asc') {
+                        return aUpdated - bUpdated;
+                    }
+                    if (sort === 'title_asc') {
+                        return aTitle.localeCompare(bTitle);
+                    }
+                    if (sort === 'title_desc') {
+                        return bTitle.localeCompare(aTitle);
+                    }
+                    return bUpdated - aUpdated;
+                });
+
+                visible.forEach(function (node) {
+                    grid.append(node);
+                });
+
+                const total = cols.length;
+                const shown = visible.length;
+                $('#notes-count').text(shown + ' of ' + total + ' notes');
+                $('#notes-empty-state').toggleClass('d-none', shown > 0 || total === 0);
+            }
 
             $('.copyToClipboard').click(function (event) {
-                let text = window.location.origin + $(this).parents('tr').find('.note-url').attr('href');
+                let text = $(this).data('link');
+                if (!text) {
+                    return;
+                }
 
-                const copyTextInput = $("#myInput");
-                copyTextInput.show();
-                copyTextInput.val(text);
-                copyTextInput.select();
-                document.execCommand("copy");
-                copyTextInput.hide();
+                const button = $(this);
+                const setCopiedTooltip = function () {
+                    button.attr('data-original-title', 'Link is copied to clipboard').tooltip('show');
+                    button.attr('data-original-title', 'Copy link to clipboard');
+                };
 
-                $(this).attr('data-original-title', 'Link is copied to clipboard').tooltip('show');
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(setCopiedTooltip).catch(function () {
+                        const tempInput = $('<textarea>').css({
+                            position: 'absolute',
+                            left: '-9999px',
+                            top: '0'
+                        }).val(text).appendTo('body');
 
-                $(this).attr('data-original-title', 'Copy link to clipboard');
+                        tempInput[0].focus();
+                        tempInput[0].select();
+                        document.execCommand('copy');
+                        tempInput.remove();
+                        setCopiedTooltip();
+                    });
+                    return;
+                }
+
+                const tempInput = $('<textarea>').css({
+                    position: 'absolute',
+                    left: '-9999px',
+                    top: '0'
+                }).val(text).appendTo('body');
+
+                tempInput[0].focus();
+                tempInput[0].select();
+                document.execCommand('copy');
+                tempInput.remove();
+                setCopiedTooltip();
             });
 
             $('#exampleModal').on('show.bs.modal', function (event) {
@@ -163,6 +335,8 @@
                 modal.find('form').attr('action', button.data('url'));
             });
 
+            $('#note-search, #note-sort, #locked-only').on('input change', applyFilters);
+            applyFilters();
         });
     </script>
 @endsection

@@ -1,46 +1,128 @@
 @extends('layouts.app')
 
+@section('stylesheet')
+    <style>
+        .dashboard-shell {
+            background: linear-gradient(140deg, #fbfcff 0%, #fff 65%, #fff8ed 100%);
+            border: 1px solid #eceff4;
+            padding: 16px;
+        }
+
+        .metric-card {
+            border: 1px solid #ececec;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .metric-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6c757d;
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-size: 30px;
+            line-height: 1;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin: 0;
+        }
+
+        .user-card {
+            border: 1px solid #e8e8e8;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .user-rank {
+            width: 30px;
+            text-align: center;
+            font-weight: 700;
+            color: #495057;
+        }
+    </style>
+@endsection
+
 @section('content')
 
     <div class="row justify-content-center">
         <h3 class="user-note-heading">Dashboard</h3>
     </div>
 
-    <div class="card-deck">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title m-0">Total Notes <span class="float-right">{{ $totalNotes }}</span></h5>
+    <div class="dashboard-shell rounded mb-4">
+        <div class="row">
+            <div class="col-md-4 mb-3 mb-md-0">
+                <div class="card metric-card h-100">
+                    <div class="card-body">
+                        <div class="metric-label">Total Notes</div>
+                        <p class="metric-value">{{ $totalNotes }}</p>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title m-0">Total Users <span class="float-right">{{ $totalUser }}</span></h5>
+            <div class="col-md-4 mb-3 mb-md-0">
+                <div class="card metric-card h-100">
+                    <div class="card-body">
+                        <div class="metric-label">Total Users</div>
+                        <p class="metric-value">{{ $totalUser }}</p>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title m-0">Filled Notes <span class="float-right">{{ $nonEmptyNotes }}</span></h5>
+            <div class="col-md-4">
+                <div class="card metric-card h-100">
+                    <div class="card-body">
+                        <div class="metric-label">Filled Notes</div>
+                        <p class="metric-value">{{ $nonEmptyNotes }}</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="row mt-4 justify-content-center">
-        <div class="col">
-            <table class="table table-bordered table-hover">
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Notes</th>
-                </tr>
+    <div class="dashboard-shell rounded">
+        <div class="row mb-3 align-items-end">
+            <div class="col-md-6 mb-2 mb-md-0">
+                <label for="user-search" class="small text-muted mb-1">Search users</label>
+                <input id="user-search" type="text" class="form-control" placeholder="Search by name or email">
+            </div>
+            <div class="col-md-3 mb-2 mb-md-0">
+                <label for="user-sort" class="small text-muted mb-1">Sort</label>
+                <select id="user-sort" class="form-control">
+                    <option value="notes_desc">Most notes</option>
+                    <option value="notes_asc">Least notes</option>
+                    <option value="name_asc">Name A-Z</option>
+                </select>
+            </div>
+            <div class="col-md-3 text-md-right">
+                <span class="badge badge-dark" id="users-count">{{ count($notesPerUser) }} users</span>
+            </div>
+        </div>
 
-                @foreach($notesPerUser as $npu)
-                    <tr>
-                        <td>{{ $npu->name }}</td>
-                        <td>{{ $npu->email }}</td>
-                        <td>{{ $npu->notes }}</td>
-                    </tr>
-                @endforeach
-            </table>
+        <div class="row" id="users-grid">
+            @foreach($notesPerUser as $index => $npu)
+                <div class="col-md-6 col-xl-4 mb-3 user-col"
+                     data-name="{{ strtolower($npu->name) }}"
+                     data-email="{{ strtolower($npu->email) }}"
+                     data-notes="{{ (int) $npu->notes }}">
+                    <div class="card user-card h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="user-rank mr-2">#{{ $index + 1 }}</div>
+                                <div>
+                                    <h6 class="mb-0">{{ $npu->name }}</h6>
+                                    <div class="small text-muted">{{ $npu->email }}</div>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <span class="badge badge-secondary">Notes: {{ $npu->notes }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
+        <div class="alert alert-light border text-muted d-none mb-0" id="users-empty-state">
+            No users match your current filters.
         </div>
     </div>
 
@@ -51,7 +133,6 @@
             </button>
         </div>
     </div>
-
 
     <!-- Delete All Empty Notes Modal -->
     <div class="modal fade" id="deleteEmptyNotes" tabindex="-1" role="dialog" aria-labelledby="deleteEmptyNotesLabel"
@@ -80,5 +161,57 @@
 @endsection
 
 @section('javascript')
+    <script>
+        $(document).ready(function () {
+            const grid = $('#users-grid');
+            const getItems = () => grid.find('.user-col');
 
+            function applyFilters() {
+                const query = ($('#user-search').val() || '').toLowerCase().trim();
+                const sort = $('#user-sort').val();
+                const items = getItems().get();
+                const visible = [];
+
+                items.forEach(function (item) {
+                    const $item = $(item);
+                    const name = ($item.data('name') || '').toString();
+                    const email = ($item.data('email') || '').toString();
+                    const show = query === '' || name.includes(query) || email.includes(query);
+                    $item.toggle(show);
+                    if (show) {
+                        visible.push(item);
+                    }
+                });
+
+                visible.sort(function (a, b) {
+                    const $a = $(a);
+                    const $b = $(b);
+                    const aNotes = parseInt($a.data('notes'), 10) || 0;
+                    const bNotes = parseInt($b.data('notes'), 10) || 0;
+                    const aName = ($a.data('name') || '').toString();
+                    const bName = ($b.data('name') || '').toString();
+
+                    if (sort === 'notes_asc') {
+                        return aNotes - bNotes;
+                    }
+                    if (sort === 'name_asc') {
+                        return aName.localeCompare(bName);
+                    }
+                    return bNotes - aNotes;
+                });
+
+                visible.forEach(function (node) {
+                    grid.append(node);
+                });
+
+                const total = items.length;
+                const shown = visible.length;
+                $('#users-count').text(shown + ' of ' + total + ' users');
+                $('#users-empty-state').toggleClass('d-none', shown > 0 || total === 0);
+            }
+
+            $('#user-search, #user-sort').on('input change', applyFilters);
+            applyFilters();
+        });
+    </script>
 @endsection
