@@ -96,6 +96,22 @@ class NotebookChatController extends Controller
         ])->with('success', 'Response generated.');
     }
 
+    public function destroyConversation(int $notebook, int $conversation)
+    {
+        $notebook = $this->ownedNotebook($notebook);
+
+        $conversation = Conversation::where('id', $conversation)
+            ->where('notebook_id', $notebook->id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        $conversation->delete();
+
+        return redirect()->route('notebooks.chat', [
+            'notebook' => $notebook->id,
+        ])->with('success', 'Conversation deleted.');
+    }
+
     private function ownedNotebook(int $id): Notebook
     {
         return Notebook::where('id', $id)

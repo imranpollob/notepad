@@ -29,6 +29,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/notebooks/{notebook}', 'NotebookController@destroy')->name('notebooks.destroy');
     Route::get('/notebooks/{notebook}/chat', 'NotebookChatController@show')->name('notebooks.chat');
     Route::post('/notebooks/{notebook}/chat', 'NotebookChatController@ask')->name('notebooks.chat.ask');
+    Route::delete('/notebooks/{notebook}/chat/{conversation}', 'NotebookChatController@destroyConversation')->name('notebooks.chat.destroy');
     Route::post('/notebooks/{notebook}/share-token', 'NotebookController@regenerateShareToken')->name('notebooks.share-token');
 
     Route::post('/notebooks/{notebook}/sources/note', 'NotebookSourceController@attachNote')->name('notebooks.sources.note');

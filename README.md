@@ -42,7 +42,11 @@ This project is currently in:
 ### RAG / Chat (Step 2 current state)
 - Source chunking and embedding storage (`source_chunks`).
 - Notebook-scoped semantic retrieval service.
-- Notebook chat UI and conversation history.
+- Notebook chat UI with conversation history management.
+- Conversation lifecycle actions:
+  - start new conversation,
+  - continue existing conversation with context memory,
+  - delete conversations.
 - Assistant responses persisted with citations metadata.
 - OpenAI-backed generation/embedding if configured.
 - Deterministic local fallback when OpenAI is unavailable.
@@ -107,6 +111,12 @@ php artisan route:list --path=n
 php artisan route:list --path=notebooks
 php artisan route:list --path=chat
 ```
+
+Manual chat checks:
+1. Open notebook chat and click `New Conversation`.
+2. Send a question and confirm user/assistant messages are saved.
+3. Select another conversation from the left panel and confirm history loads.
+4. Delete a conversation and confirm it disappears from the list and no longer opens.
 
 ---
 

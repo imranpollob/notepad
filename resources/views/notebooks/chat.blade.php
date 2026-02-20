@@ -23,9 +23,19 @@
                         <ul class="list-group list-group-flush">
                             @foreach($conversations as $conversation)
                                 <li class="list-group-item px-0 py-2 border-0">
-                                    <a href="{{ route('notebooks.chat', ['notebook' => $notebook->id, 'conversation' => $conversation->id]) }}">
-                                        {{ $conversation->title ?: ('Conversation #' . $conversation->id) }}
-                                    </a>
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <a href="{{ route('notebooks.chat', ['notebook' => $notebook->id, 'conversation' => $conversation->id]) }}"
+                                           class="{{ $selectedConversation && $selectedConversation->id === $conversation->id ? 'font-weight-bold' : '' }}">
+                                            {{ $conversation->title ?: ('Conversation #' . $conversation->id) }}
+                                        </a>
+                                        <form action="{{ route('notebooks.chat.destroy', ['notebook' => $notebook->id, 'conversation' => $conversation->id]) }}"
+                                              method="post"
+                                              onsubmit="return confirm('Delete this conversation permanently?');">
+                                            @csrf
+                                            @method('delete')
+                                            <button type="submit" class="btn btn-link btn-sm text-danger p-0 ml-2">Delete</button>
+                                        </form>
+                                    </div>
                                 </li>
                             @endforeach
                         </ul>

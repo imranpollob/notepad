@@ -89,6 +89,7 @@ The system supports note authoring, notebook-based organization, ingestion of no
 - Chunking + embedding indexing service and background job.
 - Notebook-scoped retrieval service.
 - Notebook chat UI and conversation persistence.
+- Conversation lifecycle support (new/select/delete).
 - Citation metadata persisted for assistant responses.
 - OpenAI + local fallback for embedding/chat.
 
@@ -132,6 +133,7 @@ The system supports note authoring, notebook-based organization, ingestion of no
 ### 7.4 Chat
 - `GET /notebooks/{id}/chat`
 - `POST /notebooks/{id}/chat`
+- `DELETE /notebooks/{id}/chat/{conversation}`
 
 ## 8. Configuration
 
@@ -198,6 +200,8 @@ vendor/bin/phpunit tests/Feature/NotebookChatTest.php
 2. Ask a question.
 3. Confirm conversation appears with user/assistant messages.
 4. Confirm citations are shown for assistant response.
+5. Create a second conversation and switch between threads from the conversation list.
+6. Delete one conversation and confirm it is removed while remaining threads still work.
 
 ## 11. Operational Notes
 
@@ -214,4 +218,3 @@ vendor/bin/phpunit tests/Feature/NotebookChatTest.php
 - Vector DB integration (pgvector/Qdrant/Pinecone).
 - Shared notebook chat policy and enforcement.
 - Observability dashboards for retrieval quality, costs, and latency.
-

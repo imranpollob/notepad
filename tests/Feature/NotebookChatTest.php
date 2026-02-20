@@ -270,6 +270,59 @@ class NotebookChatTest extends TestCase
         $this->assertNotEmpty($assistant->metadata['rewritten_query'] ?? '');
     }
 
+    public function testOwnerCanDeleteConversation()
+    {
+        $user = $this->createUser('chat-delete-owner@example.test');
+        $notebook = $this->createNotebook($user->id, 'chat-token-h');
+
+        $conversation = Conversation::create([
+            'notebook_id' => $notebook->id,
+            'user_id' => $user->id,
+            'title' => 'Temporary conversation',
+            'last_message_at' => now(),
+        ]);
+
+        $conversation->messages()->create([
+            'role' => 'user',
+            'message' => 'Hello',
+            'metadata' => [],
+            'token_usage' => 1,
+        ]);
+
+        $this->actingAs($user)
+            ->delete(route('notebooks.chat.destroy', [
+                'notebook' => $notebook->id,
+                'conversation' => $conversation->id,
+            ]))
+            ->assertRedirect(route('notebooks.chat', ['notebook' => $notebook->id]));
+
+        $this->assertDatabaseMissing('conversations', ['id' => $conversation->id]);
+        $this->assertDatabaseCount('conversation_messages', 0);
+    }
+
+    public function testUserCannotDeleteAnotherUsersConversation()
+    {
+        $owner = $this->createUser('chat-delete-main-owner@example.test');
+        $other = $this->createUser('chat-delete-other@example.test');
+        $notebook = $this->createNotebook($owner->id, 'chat-token-i');
+
+        $conversation = Conversation::create([
+            'notebook_id' => $notebook->id,
+            'user_id' => $owner->id,
+            'title' => 'Owner conversation',
+            'last_message_at' => now(),
+        ]);
+
+        $this->actingAs($other)
+            ->delete(route('notebooks.chat.destroy', [
+                'notebook' => $notebook->id,
+                'conversation' => $conversation->id,
+            ]))
+            ->assertNotFound();
+
+        $this->assertDatabaseHas('conversations', ['id' => $conversation->id]);
+    }
+
     public function testNonOwnerCannotAccessNotebookChat()
     {
         $owner = $this->createUser('owner-chat@example.test');
