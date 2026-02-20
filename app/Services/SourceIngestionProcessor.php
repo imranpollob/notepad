@@ -181,11 +181,44 @@ class SourceIngestionProcessor
 
     private function extractPdfText(string $path): string
     {
+        $text = '';
+
+        if ($this->commandExists('pdftotext')) {
+            $text = $this->runCommand(
+                sprintf(
+                    '%s -layout -enc UTF-8 %s - 2>/dev/null',
+                    escapeshellcmd('pdftotext'),
+                    escapeshellarg($path)
+                )
+            );
+
+            if ($this->isLikelyValidPdfText($text)) {
+                return $text;
+            }
+        }
+
         if (class_exists('\Smalot\PdfParser\Parser')) {
             $parser = new \Smalot\PdfParser\Parser();
             $pdf = $parser->parseFile($path);
+            $text = (string) $pdf->getText();
 
-            return (string) $pdf->getText();
+            if ($this->isLikelyValidPdfText($text)) {
+                return $text;
+            }
+        }
+
+        if ($this->commandExists('mutool')) {
+            $text = $this->runCommand(
+                sprintf(
+                    '%s draw -F txt %s 2>/dev/null',
+                    escapeshellcmd('mutool'),
+                    escapeshellarg($path)
+                )
+            );
+
+            if ($this->isLikelyValidPdfText($text)) {
+                return $text;
+            }
         }
 
         $raw = file_get_contents($path);
@@ -197,6 +230,10 @@ class SourceIngestionProcessor
         preg_match_all('/\(([^()]*)\)/', $raw, $matches);
         $chunks = $matches[1] ?? [];
         $text = implode(' ', array_map('stripcslashes', $chunks));
+
+        if (!$this->isLikelyValidPdfText($text)) {
+            throw new \RuntimeException('Unable to extract readable text from PDF.');
+        }
 
         return $text;
     }
@@ -252,5 +289,34 @@ class SourceIngestionProcessor
         }
 
         return count(preg_split('/\s+/', $trimmed) ?: []);
+    }
+
+    private function isLikelyValidPdfText(string $text): bool
+    {
+        $normalized = $this->normalizeText($text);
+
+        if (mb_strlen($normalized) < 20) {
+            return false;
+        }
+
+        if (!preg_match('/[A-Za-z]{3,}/', $normalized)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function commandExists(string $command): bool
+    {
+        $result = shell_exec('command -v ' . escapeshellarg($command) . ' 2>/dev/null');
+
+        return is_string($result) && trim($result) !== '';
+    }
+
+    private function runCommand(string $command): string
+    {
+        $output = shell_exec($command);
+
+        return is_string($output) ? $output : '';
     }
 }
