@@ -39,8 +39,22 @@ class NotebookController extends Controller
 
     public function show(int $notebook)
     {
+        $allowedFilters = ['pending', 'processing', 'ready', 'failed'];
+        $statusFilter = request()->query('status');
+        if (!in_array($statusFilter, $allowedFilters, true)) {
+            $statusFilter = 'all';
+        }
+
         $notebook = $this->ownedNotebook($notebook);
-        $notebook->load(['sources.files', 'sources.note']);
+        $sourceQuery = $notebook->sources()->with(['files', 'note']);
+
+        if ($statusFilter !== 'all') {
+            $sourceQuery->where('status', $statusFilter);
+        }
+
+        $sources = $sourceQuery
+            ->latest('updated_at')
+            ->get();
 
         $notes = Notes::where('owner_id', Auth::id())
             ->latest('updated_at')
@@ -49,6 +63,8 @@ class NotebookController extends Controller
         return view('notebooks.show', [
             'notebook' => $notebook,
             'notes' => $notes,
+            'sources' => $sources,
+            'statusFilter' => $statusFilter,
         ]);
     }
 

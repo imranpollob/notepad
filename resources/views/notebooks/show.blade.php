@@ -89,8 +89,21 @@
         <div class="col-lg-8">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Sources</h5>
-                    @if($notebook->sources->isEmpty())
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="card-title mb-0">Sources</h5>
+                        <form method="get" action="{{ route('notebooks.show', ['notebook' => $notebook->id]) }}" class="form-inline">
+                            <label for="status" class="mr-2 mb-0">Status</label>
+                            <select class="form-control form-control-sm mr-2" id="status" name="status">
+                                <option value="all" {{ $statusFilter === 'all' ? 'selected' : '' }}>All</option>
+                                <option value="pending" {{ $statusFilter === 'pending' ? 'selected' : '' }}>Pending</option>
+                                <option value="processing" {{ $statusFilter === 'processing' ? 'selected' : '' }}>Processing</option>
+                                <option value="ready" {{ $statusFilter === 'ready' ? 'selected' : '' }}>Ready</option>
+                                <option value="failed" {{ $statusFilter === 'failed' ? 'selected' : '' }}>Failed</option>
+                            </select>
+                            <button type="submit" class="btn btn-outline-dark btn-sm">Apply</button>
+                        </form>
+                    </div>
+                    @if($sources->isEmpty())
                         <p class="text-muted m-0">No sources attached yet.</p>
                     @else
                         <div class="table-responsive">
@@ -105,11 +118,16 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($notebook->sources as $source)
+                                @foreach($sources as $source)
                                     <tr>
                                         <td class="text-uppercase">{{ $source->source_type }}</td>
                                         <td>{{ $source->title ?: '-' }}</td>
-                                        <td><span class="badge badge-light">{{ $source->status }}</span></td>
+                                        <td>
+                                            <span class="badge badge-light">{{ $source->status }}</span>
+                                            @if($source->error_message)
+                                                <div class="small text-danger mt-1">{{ $source->error_message }}</div>
+                                            @endif
+                                        </td>
                                         <td>
                                             @if($source->source_type === 'note' && $source->note)
                                                 <a href="{{ route('note.show', ['url' => $source->note->url]) }}" target="_blank">{{ $source->note->title ?: $source->note->url }}</a>
@@ -122,11 +140,19 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <form action="{{ route('notebooks.sources.destroy', ['notebook' => $notebook->id, 'source' => $source->id]) }}" method="post">
-                                                @csrf
-                                                @method('delete')
-                                                <button type="submit" class="btn btn-outline-danger btn-sm">Remove</button>
-                                            </form>
+                                            <div class="d-flex">
+                                                @if($source->status === 'failed' && in_array($source->source_type, ['file', 'url']))
+                                                    <form action="{{ route('notebooks.sources.retry', ['notebook' => $notebook->id, 'source' => $source->id]) }}" method="post" class="mr-2">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-outline-primary btn-sm">Retry</button>
+                                                    </form>
+                                                @endif
+                                                <form action="{{ route('notebooks.sources.destroy', ['notebook' => $notebook->id, 'source' => $source->id]) }}" method="post">
+                                                    @csrf
+                                                    @method('delete')
+                                                    <button type="submit" class="btn btn-outline-danger btn-sm">Remove</button>
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach

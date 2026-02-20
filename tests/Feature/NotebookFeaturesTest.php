@@ -8,6 +8,7 @@ use App\Source;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
@@ -73,6 +74,10 @@ class NotebookFeaturesTest extends TestCase
     public function testUserCanAttachNoteFileAndUrlToNotebook()
     {
         Storage::fake('local');
+        Http::fake([
+            'https://example.com/*' => Http::response('<html><body><h1>Docs</h1><p>Body content</p></body></html>', 200),
+        ]);
+
         $user = $this->createUser('attach-user@example.test');
 
         $notebook = Notebook::create([
@@ -150,6 +155,39 @@ class NotebookFeaturesTest extends TestCase
 
         $this->get(route('notebooks.shared', ['token' => $privateNotebook->share_token]))
             ->assertNotFound();
+    }
+
+    public function testNotebookSourceStatusFilterShowsMatchingRows()
+    {
+        $user = $this->createUser('filter-user@example.test');
+        $notebook = Notebook::create([
+            'user_id' => $user->id,
+            'name' => 'Filter Notebook',
+            'visibility' => 'private',
+            'share_token' => 'filter-token',
+        ]);
+
+        Source::create([
+            'notebook_id' => $notebook->id,
+            'created_by' => $user->id,
+            'source_type' => 'url',
+            'title' => 'Ready Source',
+            'status' => 'ready',
+        ]);
+
+        Source::create([
+            'notebook_id' => $notebook->id,
+            'created_by' => $user->id,
+            'source_type' => 'file',
+            'title' => 'Failed Source',
+            'status' => 'failed',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('notebooks.show', ['notebook' => $notebook->id, 'status' => 'failed']))
+            ->assertOk()
+            ->assertSee('Failed Source')
+            ->assertDontSee('Ready Source');
     }
 
     private function createUser(string $email): User
