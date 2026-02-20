@@ -19,6 +19,24 @@ Route::get('/callback/{provider}', 'SocialController@callback');
 Route::get('/dashboard', 'HomeController@dashboard')->middleware(['auth', 'admin'])->name('dashboard');
 Route::delete('/dashboard', 'HomeController@delete')->middleware(['auth', 'admin'])->name('dashboard');
 
+Route::middleware('auth')->group(function () {
+    Route::get('/notebooks', 'NotebookController@index')->name('notebooks.index');
+    Route::get('/notebooks/create', 'NotebookController@create')->name('notebooks.create');
+    Route::post('/notebooks', 'NotebookController@store')->name('notebooks.store');
+    Route::get('/notebooks/{notebook}', 'NotebookController@show')->name('notebooks.show');
+    Route::get('/notebooks/{notebook}/edit', 'NotebookController@edit')->name('notebooks.edit');
+    Route::put('/notebooks/{notebook}', 'NotebookController@update')->name('notebooks.update');
+    Route::delete('/notebooks/{notebook}', 'NotebookController@destroy')->name('notebooks.destroy');
+    Route::post('/notebooks/{notebook}/share-token', 'NotebookController@regenerateShareToken')->name('notebooks.share-token');
+
+    Route::post('/notebooks/{notebook}/sources/note', 'NotebookSourceController@attachNote')->name('notebooks.sources.note');
+    Route::post('/notebooks/{notebook}/sources/file', 'NotebookSourceController@attachFile')->name('notebooks.sources.file');
+    Route::post('/notebooks/{notebook}/sources/url', 'NotebookSourceController@attachUrl')->name('notebooks.sources.url');
+    Route::delete('/notebooks/{notebook}/sources/{source}', 'NotebookSourceController@destroy')->name('notebooks.sources.destroy');
+});
+
+Route::get('/shared/notebooks/{token}', 'NotebookController@shared')->name('notebooks.shared');
+
 Route::prefix('n')->group(function () {
     Route::get('{url}', 'NotesController@index')
         ->where('url', '[A-Za-z0-9]+')

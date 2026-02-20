@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -71,6 +72,10 @@
 
                     <li class="nav-item {{ (request()->is('notes')) ? 'active' : '' }}">
                         <a class="nav-link text-dark" href="{{ route('notes') }}">Notes</a>
+                    </li>
+
+                    <li class="nav-item {{ (request()->is('notebooks*')) ? 'active' : '' }}">
+                        <a class="nav-link text-dark" href="{{ route('notebooks.index') }}">Notebooks</a>
                     </li>
 
                     <li class="nav-item">
