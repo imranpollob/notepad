@@ -34,6 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/notebooks/{notebook}/sources/note', 'NotebookSourceController@attachNote')->name('notebooks.sources.note');
     Route::post('/notebooks/{notebook}/sources/file', 'NotebookSourceController@attachFile')->name('notebooks.sources.file');
     Route::post('/notebooks/{notebook}/sources/url', 'NotebookSourceController@attachUrl')->name('notebooks.sources.url');
+    Route::get('/notebooks/{notebook}/sources/{source}/download', 'NotebookSourceController@download')->name('notebooks.sources.download');
     Route::post('/notebooks/{notebook}/sources/{source}/retry', 'NotebookSourceController@retry')->name('notebooks.sources.retry');
     Route::delete('/notebooks/{notebook}/sources/{source}', 'NotebookSourceController@destroy')->name('notebooks.sources.destroy');
 });

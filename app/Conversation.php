@@ -10,11 +10,14 @@ class Conversation extends Model
         'notebook_id',
         'user_id',
         'title',
+        'context_summary',
+        'summary_updated_at',
         'last_message_at',
     ];
 
     protected $casts = [
         'last_message_at' => 'datetime',
+        'summary_updated_at' => 'datetime',
     ];
 
     public function notebook()

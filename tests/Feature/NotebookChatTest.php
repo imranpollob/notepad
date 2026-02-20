@@ -44,6 +44,8 @@ class NotebookChatTest extends TestCase
 
     public function testNotebookChatStoresConversationAndAssistantCitations()
     {
+        config(['rag.min_retrieval_score' => 0.0]);
+
         $user = $this->createUser('chat-user@example.test');
         $notebook = $this->createNotebook($user->id, 'chat-token-b');
 
@@ -77,14 +79,195 @@ class NotebookChatTest extends TestCase
         $this->assertCount(2, $messages);
         $this->assertSame('user', $messages[0]->role);
         $this->assertSame('assistant', $messages[1]->role);
+        $this->assertNotNull($messages[0]->token_usage);
+        $this->assertNotNull($messages[1]->token_usage);
+        $this->assertGreaterThan(0, (int) $messages[0]->token_usage);
+        $this->assertGreaterThan(0, (int) $messages[1]->token_usage);
         $this->assertIsArray($messages[1]->metadata['citations'] ?? null);
         $this->assertNotEmpty($messages[1]->metadata['citations'] ?? []);
+        $this->assertMatchesRegularExpression('/\[\d+\]/', $messages[1]->message);
+        $this->assertArrayHasKey('semantic_score', $messages[1]->metadata['citations'][0]);
+        $this->assertArrayHasKey('keyword_score', $messages[1]->metadata['citations'][0]);
+        $this->assertArrayHasKey('reference_url', $messages[1]->metadata['citations'][0]);
+        $this->assertArrayHasKey('reference_label', $messages[1]->metadata['citations'][0]);
+        $this->assertArrayHasKey('rewritten_query', $messages[1]->metadata);
+        $this->assertArrayHasKey('used_message_ids', $messages[1]->metadata);
+        $this->assertArrayHasKey('retrieved_chunk_ids', $messages[1]->metadata);
+        $this->assertArrayHasKey('used_summary', $messages[1]->metadata);
 
         $this->actingAs($user)
             ->get(route('notebooks.chat', ['notebook' => $notebook->id, 'conversation' => $conversation->id]))
             ->assertOk()
             ->assertSee('Notebook Chat')
-            ->assertSee('Citations');
+            ->assertSee('Citations')
+            ->assertSee('href="#cite-' . $messages[1]->id . '-1"', false);
+    }
+
+    public function testNotebookChatCanBeScopedToSelectedSources()
+    {
+        $user = $this->createUser('chat-scope@example.test');
+        $notebook = $this->createNotebook($user->id, 'chat-token-d');
+
+        $sourceA = Source::create([
+            'notebook_id' => $notebook->id,
+            'created_by' => $user->id,
+            'source_type' => 'url',
+            'title' => 'Laravel source',
+            'status' => 'ready',
+        ]);
+        SourceContent::create([
+            'source_id' => $sourceA->id,
+            'content_text' => 'Laravel queue worker and artisan commands.',
+            'word_count' => 6,
+            'extracted_at' => now(),
+        ]);
+
+        $sourceB = Source::create([
+            'notebook_id' => $notebook->id,
+            'created_by' => $user->id,
+            'source_type' => 'url',
+            'title' => 'Docker source',
+            'status' => 'ready',
+        ]);
+        SourceContent::create([
+            'source_id' => $sourceB->id,
+            'content_text' => 'Docker containers and compose services.',
+            'word_count' => 5,
+            'extracted_at' => now(),
+        ]);
+
+        app(SourceIndexingService::class)->indexSource($sourceA->id);
+        app(SourceIndexingService::class)->indexSource($sourceB->id);
+
+        $this->actingAs($user)
+            ->post(route('notebooks.chat.ask', ['notebook' => $notebook->id]), [
+                'message' => 'What does this say about containers?',
+                'source_ids' => [$sourceA->id],
+            ])
+            ->assertRedirect();
+
+        $conversation = Conversation::where('notebook_id', $notebook->id)->firstOrFail();
+        $assistant = $conversation->messages()->where('role', 'assistant')->firstOrFail();
+        $citations = $assistant->metadata['citations'] ?? [];
+
+        $this->assertNotEmpty($citations);
+        $this->assertSame($sourceA->id, (int) $citations[0]['source_id']);
+    }
+
+    public function testNotebookChatReturnsStrictNoContextWhenBelowThreshold()
+    {
+        config(['rag.min_retrieval_score' => 0.99]);
+
+        $user = $this->createUser('chat-threshold@example.test');
+        $notebook = $this->createNotebook($user->id, 'chat-token-e');
+
+        $source = Source::create([
+            'notebook_id' => $notebook->id,
+            'created_by' => $user->id,
+            'source_type' => 'url',
+            'title' => 'Small source',
+            'status' => 'ready',
+        ]);
+        SourceContent::create([
+            'source_id' => $source->id,
+            'content_text' => 'Alpha beta gamma delta.',
+            'word_count' => 4,
+            'extracted_at' => now(),
+        ]);
+        app(SourceIndexingService::class)->indexSource($source->id);
+
+        $this->actingAs($user)
+            ->post(route('notebooks.chat.ask', ['notebook' => $notebook->id]), [
+                'message' => 'Tell me about unrelated Kubernetes clusters in production.',
+            ])
+            ->assertRedirect();
+
+        $conversation = Conversation::where('notebook_id', $notebook->id)->firstOrFail();
+        $assistant = $conversation->messages()->where('role', 'assistant')->firstOrFail();
+
+        $this->assertStringContainsString('not have enough relevant context', $assistant->message);
+    }
+
+    public function testNotebookChatWithExplicitNoSourceSelectionReturnsNoContext()
+    {
+        $user = $this->createUser('chat-no-source@example.test');
+        $notebook = $this->createNotebook($user->id, 'chat-token-f');
+
+        $source = Source::create([
+            'notebook_id' => $notebook->id,
+            'created_by' => $user->id,
+            'source_type' => 'url',
+            'title' => 'Available source',
+            'status' => 'ready',
+        ]);
+        SourceContent::create([
+            'source_id' => $source->id,
+            'content_text' => 'This source has useful application context.',
+            'word_count' => 6,
+            'extracted_at' => now(),
+        ]);
+        app(SourceIndexingService::class)->indexSource($source->id);
+
+        $this->actingAs($user)
+            ->post(route('notebooks.chat.ask', ['notebook' => $notebook->id]), [
+                'message' => 'What context is available?',
+                'source_filter_submitted' => '1',
+            ])
+            ->assertRedirect();
+
+        $conversation = Conversation::where('notebook_id', $notebook->id)->firstOrFail();
+        $assistant = $conversation->messages()->where('role', 'assistant')->firstOrFail();
+        $this->assertStringContainsString('not have enough relevant context', $assistant->message);
+    }
+
+    public function testFollowupMessageStoresRewriteAndConversationSummary()
+    {
+        config(['rag.min_retrieval_score' => 0.0]);
+        config(['rag.recent_messages_window' => 2]);
+
+        $user = $this->createUser('chat-followup@example.test');
+        $notebook = $this->createNotebook($user->id, 'chat-token-g');
+
+        $source = Source::create([
+            'notebook_id' => $notebook->id,
+            'created_by' => $user->id,
+            'source_type' => 'url',
+            'title' => 'Queue docs',
+            'status' => 'ready',
+        ]);
+
+        SourceContent::create([
+            'source_id' => $source->id,
+            'content_text' => 'Queue workers process background jobs and can be scaled for throughput.',
+            'word_count' => 11,
+            'extracted_at' => now(),
+        ]);
+
+        app(SourceIndexingService::class)->indexSource($source->id);
+
+        $this->actingAs($user)->post(route('notebooks.chat.ask', ['notebook' => $notebook->id]), [
+            'message' => 'Explain queue workers in this notebook.',
+        ])->assertRedirect();
+
+        $conversation = Conversation::where('notebook_id', $notebook->id)->firstOrFail();
+
+        $this->actingAs($user)->post(route('notebooks.chat.ask', ['notebook' => $notebook->id]), [
+            'message' => 'what about that?',
+            'conversation_id' => $conversation->id,
+        ])->assertRedirect();
+
+        $conversation->refresh();
+        $this->assertNotNull($conversation->context_summary);
+        $this->assertNotNull($conversation->summary_updated_at);
+
+        $assistant = $conversation->messages()
+            ->where('role', 'assistant')
+            ->latest('id')
+            ->firstOrFail();
+
+        $this->assertIsArray($assistant->metadata['used_message_ids'] ?? null);
+        $this->assertIsArray($assistant->metadata['retrieved_chunk_ids'] ?? null);
+        $this->assertNotEmpty($assistant->metadata['rewritten_query'] ?? '');
     }
 
     public function testNonOwnerCannotAccessNotebookChat()

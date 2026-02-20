@@ -12,6 +12,7 @@ use App\Jobs\ProcessSourceIngestion;
 use App\Jobs\IndexSourceChunks;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class NotebookSourceController extends Controller
 {
@@ -145,6 +146,25 @@ class NotebookSourceController extends Controller
 
         return redirect()->route('notebooks.show', ['notebook' => $notebook->id])
             ->with('success', 'Source removed from notebook.');
+    }
+
+    public function download(int $notebook, int $source)
+    {
+        $notebook = $this->ownedNotebook($notebook);
+
+        $source = Source::with('files')
+            ->where('id', $source)
+            ->where('notebook_id', $notebook->id)
+            ->where('source_type', 'file')
+            ->firstOrFail();
+
+        $file = $source->files->first();
+
+        if (!$file) {
+            abort(404);
+        }
+
+        return Storage::disk($file->disk)->download($file->path, $file->original_name);
     }
 
     public function retry(int $notebook, int $source)
