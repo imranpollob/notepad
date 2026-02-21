@@ -1,133 +1,153 @@
-# Notepad Knowledge Workspace
+# Notebase
+**Write instantly. Save when you're ready. Chat with your knowledge base.**
 
-Notepad is a Laravel-based knowledge workspace that combines:
-- shareable rich-text notes,
-- notebook-based document organization,
-- source ingestion (notes/files/URLs),
-- and Step 2 RAG-ready chat with citations.
+![Notebase](public/og-image.png)
 
-This project is currently in:
-- **Step 1 complete**: product foundation without AI dependency.
-- **Step 2 in progress**: chat, chunking, indexing, and retrieval scaffolding are implemented.
+
+Notebase is a Laravel-based productivity tool that combines a no-login rich-text notepad with a personal knowledge workspace. Save notes to the cloud, organize them into notebooks, attach sources, and query your content through an AI chat interface with cited responses.
 
 ---
 
-## Key Features
+## Features
 
-### Notes
-- Rich-text note editor with autosave.
-- Namespaced note routes: `/n/{slug}`.
-- Legacy short links still work via redirect.
-- Optional password protection (hashed at rest).
-- Owner-aware edit permissions and read-only fallback for unauthorized users.
+### ✏️ Instant Notepad
+- Rich-text editor (Quill) with autosave — no sign-up required to start writing
+- Save to cloud with one click once you're ready
+- Namespaced note URLs: `/n/{slug}`
+- Optional password protection on any note (hashed at rest)
+- Owner-aware edit permissions with read-only fallback for visitors
 
-### Notebooks and Sources
-- Notebook CRUD with visibility modes: `private`, `unlisted`, `public`.
-- Share-token links for `unlisted` and `public`.
-- Attach sources to notebooks:
-  - existing notes,
-  - uploaded files (`pdf`, `doc`, `docx`),
-  - URLs.
-- Source management:
-  - remove sources,
-  - status filtering (`pending`, `processing`, `ready`, `failed`),
-  - retry failed file/URL ingestion.
+### 📓 Notebooks & Organization
+- Create notebooks with visibility controls: `private`, `unlisted`, `public`
+- Share-token links for unlisted and public notebooks
+- Attach sources to notebooks — existing notes, uploaded files (`pdf`, `doc`, `docx`), or URLs
+- Manage sources with status filtering (`pending`, `processing`, `ready`, `failed`) and retry support
 
-### Ingestion Pipeline (Non-AI Foundation)
-- Background ingestion jobs with status tracking.
-- URL extraction with HTML cleanup.
-- File extraction with format-specific strategies.
-- Extracted text persisted to `source_contents`.
+### 🔍 Source Ingestion Pipeline
+- Background ingestion jobs with status tracking
+- URL extraction with HTML cleanup
+- File extraction with format-specific strategies
+- Extracted text persisted for retrieval
 
-### RAG / Chat (Step 2 current state)
-- Source chunking and embedding storage (`source_chunks`).
-- Notebook-scoped semantic retrieval service.
-- Notebook chat UI with conversation history management.
-- Conversation lifecycle actions:
-  - start new conversation,
-  - continue existing conversation with context memory,
-  - delete conversations.
-- Assistant responses persisted with citations metadata.
-- OpenAI-backed generation/embedding if configured.
-- Deterministic local fallback when OpenAI is unavailable.
+### 🤖 AI Chat with Citations
+- Notebook-scoped semantic RAG retrieval
+- Chat UI with full conversation history and memory summarization
+- Cited assistant responses linked to source chunks
+- Token usage tracking per conversation
+- OpenAI-backed generation and embeddings when configured; deterministic local fallback otherwise
+
+### 🔐 Authentication
+- Social login only — Google and GitHub OAuth via Laravel Socialite
+- No passwords, no email verification, no registration forms
+
+---
+
+## Tech Stack
+
+| Layer           | Technology                                    |
+| --------------- | --------------------------------------------- |
+| Backend         | PHP 8.2+, Laravel 12                          |
+| Frontend        | Bootstrap 4.6.2, jQuery 3.7.1, Quill 2.0.3    |
+| Auth            | Laravel Socialite (Google, GitHub)            |
+| AI / Embeddings | OpenAI API (optional)                         |
+| Queue           | Laravel Queue (`database` driver recommended) |
+| Database        | MySQL / PostgreSQL / SQLite                   |
 
 ---
 
 ## Quick Start
 
 ```bash
-cd /Users/imranpollob/Coding/notepad
-
 composer install
-npm install
+npm install && npm run dev
 
 cp .env.example .env
 php artisan key:generate
-```
-
-Configure `.env`:
-- database connection
-- queue connection (`database` recommended)
-- optional OpenAI keys
-
-Run migrations:
-```bash
 php artisan migrate
 ```
 
-Build frontend assets (if needed):
-```bash
-npm run dev
+### Environment Variables
+
+```env
+APP_URL=http://localhost:8000
+
+# Database
+DB_CONNECTION=mysql
+DB_DATABASE=notebase
+DB_USERNAME=root
+DB_PASSWORD=
+
+# Queue (required for source ingestion)
+QUEUE_CONNECTION=database
+
+# Social Auth — Google
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GOOGLE_REDIRECT_URI="${APP_URL}/callback/google"
+
+# Social Auth — GitHub
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
+GITHUB_REDIRECT_URI="${APP_URL}/callback/github"
+
+# AI — optional, local fallback used when absent
+OPENAI_API_KEY=
+OPENAI_EMBEDDING_MODEL=text-embedding-3-small
+OPENAI_CHAT_MODEL=gpt-4o-mini
 ```
 
-Start app:
+### Run
+
 ```bash
+# Web server
 php artisan serve
-```
 
-Start queue worker (required for background processing):
-```bash
+# Background worker — required for source ingestion
 php artisan queue:work
 ```
 
-If using `QUEUE_CONNECTION=database` and jobs table is missing:
-```bash
-php artisan queue:table
-php artisan migrate
+> If the jobs table is missing: `php artisan queue:table && php artisan migrate`
+
+---
+
+## RAG Configuration
+
+Fine-tune retrieval behaviour in `.env`:
+
+```env
+RAG_MIN_RETRIEVAL_SCORE=0.08
+RAG_SEMANTIC_WEIGHT=0.75
+RAG_KEYWORD_WEIGHT=0.25
+RAG_RECENT_MESSAGES_WINDOW=6
+RAG_SUMMARY_CHAR_LIMIT=1200
 ```
 
 ---
 
-## Verification
+## Testing
 
-Run test suite:
 ```bash
 vendor/bin/phpunit
 ```
 
 Useful route checks:
+
 ```bash
 php artisan route:list --path=n
 php artisan route:list --path=notebooks
 php artisan route:list --path=chat
 ```
 
-Manual chat checks:
-1. Open notebook chat and click `New Conversation`.
-2. Send a question and confirm user/assistant messages are saved.
-3. Select another conversation from the left panel and confirm history loads.
-4. Delete a conversation and confirm it disappears from the list and no longer opens.
-
 ---
 
 ## Documentation
 
-Full technical documentation:
-- [`PROJECT_DOCUMENTATION.md`](PROJECT_DOCUMENTATION.md)
+Full technical documentation — architecture, data model, ingestion pipeline internals, chat flow, route map, security model, and roadmap:
 
-Includes architecture, data model, ingestion and chat internals, route map, security model, operations, and roadmap.
+→ [`PROJECT_DOCUMENTATION.md`](PROJECT_DOCUMENTATION.md)
 
 ---
 
-## Screenshot
-![Notepad Screenshot](/screenshot.png)
+## License
+
+MIT
