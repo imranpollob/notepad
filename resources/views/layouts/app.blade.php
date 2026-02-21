@@ -15,7 +15,7 @@
     <meta name="theme-color" content="#ffffff">
     <title>Note Online - Store and share notes</title>
     <meta name="description" content="Note online is a free tool for storing and sharing your notes. No registration required." />
-    <meta name="robots" content="”index," follow” />
+    <meta name="robots" content="index, follow" />
 
     <meta property="og:title" content="Note Online - Store and share notes">
     <meta property="og:description" content="Note online is a free tool for storing and sharing your notes. No registration required.">
@@ -29,10 +29,10 @@
     <meta name="twitter:card" content="summary">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
-    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css?v=1.7">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="/css/style.css?v=2.0">
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
@@ -41,8 +41,8 @@
 
     <style>
         .app-navbar {
-            background: linear-gradient(135deg, #ffffff 0%, #f4f9ff 60%, #fff8ec 100%);
-            border-bottom: 1px solid #e9edf2;
+            background: linear-gradient(135deg, var(--color-bg-page) 0%, var(--color-bg-subtle) 60%, var(--color-accent-bg) 100%);
+            border-bottom: 1px solid var(--color-border);
             padding-top: 10px;
             padding-bottom: 10px;
         }
@@ -65,7 +65,7 @@
             left: 50%;
             transform: translateX(-50%);
             text-decoration: none;
-            color: #1c2f46;
+            color: var(--color-text);
             font-weight: 700;
             letter-spacing: 0.5px;
             display: inline-flex;
@@ -75,19 +75,19 @@
 
         .app-logo-center:hover {
             text-decoration: none;
-            color: #0f2238;
+            color: var(--color-heading);
         }
 
         .app-logo-dot {
             width: 12px;
             height: 12px;
-            background: linear-gradient(135deg, #0f5da5 0%, #2ca2ff 100%);
-            border-radius: 50% !important;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+            border-radius: var(--radius-circle) !important;
             box-shadow: 0 0 0 4px rgba(44, 162, 255, 0.15);
         }
 
         .app-logo-text {
-            font-family: 'Lora', serif;
+            font-family: var(--font-heading);
             font-size: 18px;
             line-height: 1;
         }
@@ -104,36 +104,41 @@
             letter-spacing: 0.3px;
             padding-left: 10px;
             padding-right: 10px;
+            border-radius: var(--radius-sm);
         }
 
         .app-navbar .main-nav-link {
-            color: #2b2b2b;
+            color: var(--color-text);
             font-weight: 600;
             padding: 7px 12px;
             border: 1px solid transparent;
-            transition: all 0.15s ease;
+            border-radius: var(--radius-sm);
+            transition: all var(--transition-fast);
         }
 
         .app-navbar .main-nav-link:hover {
-            color: #111;
-            border-color: #dce8f7;
-            background-color: #f5f9ff;
+            color: var(--color-heading);
+            border-color: var(--color-primary-border);
+            background-color: var(--color-bg-subtle);
         }
 
         .app-navbar .nav-item.active .main-nav-link {
-            color: #0c3a67;
-            border-color: #c7dbf0;
-            background-color: #eaf4ff;
+            color: var(--color-primary);
+            border-color: var(--color-primary-border);
+            background-color: var(--color-primary-bg);
         }
 
         .app-navbar .btn-login,
+        .app-navbar .btn-register,
         .app-navbar .btn-logout {
             border-width: 1.5px;
+            border-radius: var(--radius-sm);
         }
 
         .rich-editor-shell #data-editor {
-            border: 1px solid #dfe5ec;
-            background: #fff;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            background: var(--color-bg-page);
             display: flex;
             flex-direction: column;
             height: 68vh;
@@ -145,9 +150,10 @@
             position: sticky;
             top: 0;
             z-index: 5;
-            background: #fff;
+            background: var(--color-bg-page);
             border: 0;
-            border-bottom: 1px solid #e7ebf0;
+            border-bottom: 1px solid var(--color-border);
+            border-radius: var(--radius-md) var(--radius-md) 0 0;
         }
 
         .rich-editor-shell #data-editor .ql-container.ql-snow {
@@ -185,7 +191,7 @@
         }
 
         .rich-editor-shell #data-editor .ql-editor img.editor-image-active {
-            outline: 2px solid #2c7edb;
+            outline: 2px solid var(--color-primary-light);
             outline-offset: 2px;
             cursor: nwse-resize;
         }
@@ -242,7 +248,7 @@
                         <ul class="navbar-nav align-items-center">
                             @guest
                             <li class="nav-item">
-                                <a class="btn btn-outline-dark btn-sm mx-2 btn-login" href="{{ route('login') }}"><i class="fa fa-sign-in"></i> Login</a>
+                                <a class="btn btn-outline-dark btn-sm mx-1 btn-login" href="{{ route('login') }}"><i class="fa fa-sign-in"></i> Login</a>
                             </li>
                             @else
                             @if(auth()->id() === 1)
@@ -279,12 +285,29 @@
             @yield('content')
         </main>
 
+        <footer class="app-footer">
+            <div class="container">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+                    <span>&copy; {{ date('Y') }} Note Online &mdash; Free online note-taking tool</span>
+                    <div class="mt-2 mt-md-0">
+                        <a href="{{ route('home') }}" class="mr-3">Home</a>
+                        @guest
+                        <a href="{{ route('login') }}">Login</a>
+                        @else
+                        <a href="{{ route('notes') }}" class="mr-3">My Notes</a>
+                        <a href="{{ route('notebooks.index') }}">Notebooks</a>
+                        @endguest
+                    </div>
+                </div>
+            </div>
+        </footer>
+
         <input type="hidden" id="hiddenInput">
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script defer src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
     <script defer src="{{ asset('js/script.js') }}?v=1.5"></script>
 

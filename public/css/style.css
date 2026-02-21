@@ -1,32 +1,57 @@
-* {
-    border-radius: 0 !important;
+/* ===== Design Tokens ===== */
+:root {
+    /* Brand colors */
+    --color-primary: #0f5da5;
+    --color-primary-light: #2ca2ff;
+    --color-primary-bg: #eaf4ff;
+    --color-primary-border: #c7dbf0;
+
+    /* Accent / warm */
+    --color-accent-bg: #fff8ed;
+
+    /* Neutrals */
+    --color-text: #1c2f46;
+    --color-text-muted: #5b6470;
+    --color-heading: #15253b;
+    --color-border: #e5e9ef;
+    --color-bg-subtle: #f5f9ff;
+    --color-bg-page: #ffffff;
+
+    /* Shadows */
+    --shadow-card: 0 8px 20px rgba(12, 42, 79, 0.06);
+    --shadow-card-hover: 0 12px 28px rgba(12, 42, 79, 0.11);
+
+    /* Radii */
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 10px;
+    --radius-pill: 50px;
+    --radius-circle: 50%;
+
+    /* Typography */
+    --font-body: 'Open Sans', sans-serif;
+    --font-heading: 'Lora', serif;
+
+    /* Spacing */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+
+    /* Transitions */
+    --transition-fast: 0.15s ease;
 }
 
+/* ===== Global Reset ===== */
 body {
-    font-family: 'Open Sans', sans-serif;
+    font-family: var(--font-body);
+    color: var(--color-text);
 }
 
+/* ===== Utility helpers ===== */
 .social-login-text {
     padding-bottom: 20px;
-}
-
-.user-note-heading {
-    padding: 30px;
-    font-weight: 400;
-}
-
-.site-info {
-    margin-top: 50px;
-}
-
-.site-info h1,
-.site-info h2 {
-    font-size: 14px;
-    text-align: center;
-}
-
-.action-buttons button {
-    /*margin-right: 10px;*/
 }
 
 #myInput {
@@ -39,18 +64,134 @@ body {
     align-items: center;
 }
 
-#notesTable_wrapper {
-    width: 100%;
-}
-
 .note-group-select-from-files {
     display: none;
 }
 
-.b-3 {
-    border-width: 2px;
-}
-
 div.note-editable.card-block p {
     margin-bottom: 0;
+}
+
+/* ===== Shared page shell (gradient panel) ===== */
+.page-shell {
+    background:
+        linear-gradient(140deg, var(--color-bg-subtle) 0%, var(--color-bg-page) 60%, var(--color-accent-bg) 100%);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+}
+
+/* ===== Shared card ===== */
+.app-card {
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-card);
+    border-radius: var(--radius-md);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.app-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card-hover);
+}
+
+/* ===== Page heading ===== */
+.page-heading {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    color: var(--color-heading);
+    margin-bottom: var(--space-lg);
+}
+
+/* ===== Footer ===== */
+.app-footer {
+    border-top: 1px solid var(--color-border);
+    padding: var(--space-lg) 0;
+    margin-top: var(--space-xl);
+    color: var(--color-text-muted);
+    font-size: 13px;
+}
+
+.app-footer a {
+    color: var(--color-text);
+    text-decoration: none;
+}
+
+.app-footer a:hover {
+    text-decoration: underline;
+}
+
+/* ===== Chat styles ===== */
+.chat-messages-panel {
+    max-height: 58vh;
+    overflow-y: auto;
+    padding-right: 4px;
+    scrollbar-width: thin;
+    scrollbar-color: #b7c5d6 #f4f7fb;
+}
+
+.chat-bubble {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+
+.chat-bubble.chat-bubble--user {
+    background: var(--color-bg-subtle);
+    border-color: var(--color-primary-border);
+}
+
+.chat-bubble.chat-bubble--assistant {
+    background: var(--color-bg-page);
+}
+
+.chat-role-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.chat-role-label--user {
+    color: var(--color-primary);
+}
+
+.chat-role-label--assistant {
+    color: #6c757d;
+}
+
+.citation-ref {
+    color: var(--color-primary);
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1px dashed var(--color-primary-light);
+}
+
+.citation-ref:hover {
+    color: var(--color-primary-light);
+    text-decoration: none;
+}
+
+/* Conversation sidebar */
+.conversation-list .list-group-item {
+    border-radius: var(--radius-sm) !important;
+    transition: background var(--transition-fast);
+}
+
+.conversation-list .list-group-item:hover {
+    background: var(--color-bg-subtle);
+}
+
+/* ===== Auth page shared ===== */
+.auth-shell {
+    background:
+        linear-gradient(140deg, var(--color-bg-subtle) 0%, var(--color-bg-page) 60%, var(--color-accent-bg) 100%);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-xl);
+}
+
+.auth-shell .btn {
+    border-radius: var(--radius-sm);
 }

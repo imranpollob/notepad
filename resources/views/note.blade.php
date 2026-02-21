@@ -8,8 +8,7 @@
         :initial-data="$note->data"
         :initial-title="$note->title"
         placeholder="Just dump data!!"
-        :status-text="$canEdit ? 'Start Typing' : 'Read only'"
-    >
+        :status-text="$canEdit ? 'Start Typing' : 'Read only'">
         <x-slot name="actions">
             @if($canEdit)
             <button type="button" class="btn btn-outline-dark btn-sm" data-toggle="modal" data-target="#exampleModal">
@@ -29,14 +28,12 @@
 </div>
 @endif
 
-<div class="site-info text-muted">
-    <h1>Note online is a free tool for storing and sharing you notes.</h1>
-    @guest
-    <h2>Manage all of your created notes by <a class="" href="{{ route('login') }}">login</a></h2>
-    @endguest
+@guest
+<div class="text-center text-muted mt-4 mb-2">
+    <p class="mb-1">Note Online is a free tool for storing and sharing your notes.</p>
+    <p class="mb-0">Manage all of your created notes by <a href="{{ route('login') }}">logging in</a>.</p>
 </div>
-
-<input type="text" id="myInput">
+@endguest
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -62,7 +59,7 @@
                         {{ $note->password ? 'Update' : 'Add' }} Password
                     </button>
 
-                    @if($note->password) 
+                    @if($note->password)
                     <button type="submit" name="delete-password" class="btn btn-sm btn-outline-dark">Remove Password</button>
                     @endif
                 </form>
