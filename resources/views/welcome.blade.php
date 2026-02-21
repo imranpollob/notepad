@@ -272,7 +272,7 @@
 <section class="usecases-section mb-5">
     <div class="section-eyebrow">Use cases</div>
     <h2 class="h5 mb-2" style="font-family: var(--font-heading); margin-top: 8px;">Who is this for?</h2>
-    <p class="text-muted mb-3 small">Note Online fits wherever you need to capture ideas fast — no friction, no setup.</p>
+    <p class="text-muted mb-3 small">Notebase fits wherever you need to capture ideas fast — no friction, no setup. Group notes into notebooks and chat with your knowledge base.</p>
     <div>
         <span class="usecase-pill"><i class="fa fa-pencil mr-1 text-muted"></i> Meeting notes</span>
         <span class="usecase-pill"><i class="fa fa-lightbulb-o mr-1 text-muted"></i> Quick drafts</span>

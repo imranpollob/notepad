@@ -13,20 +13,25 @@
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
-    <title>Note Online - Store and share notes</title>
-    <meta name="description" content="Note online is a free tool for storing and sharing your notes. No registration required." />
+    <title>Notebase - Write, save and chat with your notes</title>
+    <meta name="description" content="Notebase is a free tool for writing, saving, and sharing notes. Group notes into notebooks and chat with your knowledge base." />
     <meta name="robots" content="index, follow" />
 
-    <meta property="og:title" content="Note Online - Store and share notes">
-    <meta property="og:description" content="Note online is a free tool for storing and sharing your notes. No registration required.">
-    <meta property="og:image" content="https://note.imranpollob.com/android-chrome-512x512.png">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Notebase - Write, save and chat with your notes">
+    <meta property="og:description" content="Notebase is a free tool for writing, saving, and sharing notes. Group notes into notebooks and chat with your knowledge base.">
+    <meta property="og:image" content="https://note.imranpollob.com/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Notebase - Write, save and chat with your notes">
     <meta property="og:url" content="https://note.imranpollob.com">
-    <meta property="og:site_name" content="Note Online - Store and share notes">
+    <meta property="og:site_name" content="Notebase">
 
-    <meta name="twitter:title" content="Note Online - Store and share notes">
-    <meta name="twitter:description" content="Note online is a free tool for storing and sharing your notes. No registration required.">
-    <meta name="twitter:image" content="https://note.imranpollob.com/android-chrome-512x512.png">
-    <meta name="twitter:card" content="summary">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Notebase - Write, save and chat with your notes">
+    <meta name="twitter:description" content="Notebase is a free tool for writing, saving, and sharing notes. Group notes into notebooks and chat with your knowledge base.">
+    <meta name="twitter:image" content="https://note.imranpollob.com/og-image.png">
+    <meta name="twitter:image:alt" content="Notebase - Write, save and chat with your notes">
 
     <!-- Styles -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
@@ -241,7 +246,7 @@
 
                     <a href="{{ route('home') }}" class="app-logo-center" aria-label="Go to homepage">
                         <span class="app-logo-dot"></span>
-                        <span class="app-logo-text">Note Online</span>
+                        <span class="app-logo-text">Notebase</span>
                     </a>
 
                     <div class="app-nav-right ml-auto">
@@ -288,7 +293,7 @@
         <footer class="app-footer">
             <div class="container">
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
-                    <span>&copy; {{ date('Y') }} Note Online &mdash; Free online note-taking tool</span>
+                    <span>&copy; {{ date('Y') }} Notebase &mdash; Write, save and chat with your notes</span>
                     <div class="mt-2 mt-md-0">
                         <a href="{{ route('home') }}" class="mr-3">Home</a>
                         @guest

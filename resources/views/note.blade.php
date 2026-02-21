@@ -46,7 +46,7 @@
 
 @guest
 <div class="text-center text-muted mt-4 mb-2">
-    <p class="mb-1">Note Online is a free tool for storing and sharing your notes.</p>
+    <p class="mb-1">Notebase is a free tool for writing, saving, and sharing your notes. Group notes into notebooks and chat with your knowledge base.</p>
     <p class="mb-0">Manage all of your created notes by <a href="{{ route('login') }}">logging in</a>.</p>
 </div>
 @endguest
