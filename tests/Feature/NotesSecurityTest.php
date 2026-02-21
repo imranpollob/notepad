@@ -12,15 +12,13 @@ class NotesSecurityTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testHomeRedirectsToNamespacedNoteUrl()
+    public function testHomePageLoadsWithoutCreatingCloudNote()
     {
         $response = $this->get('/');
 
-        $response->assertStatus(302);
-        $this->assertMatchesRegularExpression(
-            '#/n/[A-Za-z0-9]{8}$#',
-            (string) $response->headers->get('Location')
-        );
+        $response->assertOk();
+        $response->assertSee('Save to Cloud');
+        $this->assertDatabaseCount('notes', 0);
     }
 
     public function testLegacyNoteUrlRedirectsToNamespacedPath()

@@ -1,31 +1,27 @@
 @extends('layouts.app')
 
 @section('content')
-<form action="{{ url()->current() }}" method="post" id="note-form" data-editable="{{ $canEdit ? '1' : '0' }}">
+<form action="{{ url()->current() }}" method="post" id="note-form" data-editable="{{ $canEdit ? '1' : '0' }}" data-save-mode="remote">
     @csrf
 
-    <div class="form-group">
-        <textarea name="data" class="form-control" id="data" rows="15" placeholder="Just dump data!!">{{ $note->data }}</textarea>
-    </div>
-
-    <div class="form-group">
-        <input type="text" name="title" class="form-control" id="title" value="{{ $note->title }}" placeholder="Optional Title">
-    </div>
+    <x-rich-editor
+        :initial-data="$note->data"
+        :initial-title="$note->title"
+        placeholder="Just dump data!!"
+        :status-text="$canEdit ? 'Start Typing' : 'Read only'"
+    >
+        <x-slot name="actions">
+            @if($canEdit)
+            <button type="button" class="btn btn-outline-dark btn-sm" data-toggle="modal" data-target="#exampleModal">
+                <i class="fa fa-key"></i> Password
+            </button>
+            @endif
+            <button type="button" class="btn btn-outline-dark btn-sm copyToClipboard" data-toggle="tooltip" data-placement="top" title="Copy link to clipboard">
+                <i class="fa fa-copy"></i> <span class="d-none d-md-inline">Copy link to clipboard</span>
+            </button>
+        </x-slot>
+    </x-rich-editor>
 </form>
-
-<div class="bottom-panel">
-    <div id="save-status" class="badge badge-secondary">{{ $canEdit ? 'Start Typing' : 'Read only' }}</div>
-    <div>
-        @if($canEdit)
-        <button type="button" class="btn btn-outline-dark btn-sm" data-toggle="modal" data-target="#exampleModal">
-            <i class="fa fa-key"></i> Password
-        </button>
-        @endif
-        <button type="button" class="btn btn-outline-dark btn-sm copyToClipboard" data-toggle="tooltip" data-placement="top" title="Copy link to clipboard">
-            <i class="fa fa-copy"></i> <span class="d-none d-md-inline">Copy link to clipboard</span>
-        </button>
-    </div>
-</div>
 
 @if(!$canEdit)
 <div class="alert alert-warning mt-3" role="alert">

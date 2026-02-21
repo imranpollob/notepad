@@ -2,7 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', 'HomeController@newNote')->name('home');
+Route::get('/', 'HomeController@home')->name('home');
+Route::get('/new', 'HomeController@newNote')->name('note.new');
+Route::post('/new', 'HomeController@storeFromHome')->name('home.note.store');
 
 Auth::routes([
     'register' => false,
