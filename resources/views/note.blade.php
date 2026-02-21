@@ -1,26 +1,42 @@
 @extends('layouts.app')
 
-@section('content')
-<form action="{{ url()->current() }}" method="post" id="note-form" data-editable="{{ $canEdit ? '1' : '0' }}" data-save-mode="remote">
-    @csrf
+@section('stylesheet')
+<style>
+    .home-shell {
+        background:
+            radial-gradient(circle at top right, rgba(15, 93, 165, 0.08), transparent 42%),
+            radial-gradient(circle at bottom left, rgba(255, 173, 71, 0.10), transparent 38%),
+            linear-gradient(140deg, var(--color-bg-subtle) 0%, var(--color-bg-page) 58%, var(--color-accent-bg) 100%);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        padding: var(--space-lg);
+    }
+</style>
+@endsection
 
-    <x-rich-editor
-        :initial-data="$note->data"
-        :initial-title="$note->title"
-        placeholder="Just dump data!!"
-        :status-text="$canEdit ? 'Start Typing' : 'Read only'">
-        <x-slot name="actions">
-            @if($canEdit)
-            <button type="button" class="btn btn-outline-dark btn-sm" data-toggle="modal" data-target="#exampleModal">
-                <i class="fa fa-key"></i> Password
-            </button>
-            @endif
-            <button type="button" class="btn btn-outline-dark btn-sm copyToClipboard" data-toggle="tooltip" data-placement="top" title="Copy link to clipboard">
-                <i class="fa fa-copy"></i> <span class="d-none d-md-inline">Copy link to clipboard</span>
-            </button>
-        </x-slot>
-    </x-rich-editor>
-</form>
+@section('content')
+<div class="home-shell mb-4">
+    <form action="{{ url()->current() }}" method="post" id="note-form" data-editable="{{ $canEdit ? '1' : '0' }}" data-save-mode="remote">
+        @csrf
+
+        <x-rich-editor
+            :initial-data="$note->data"
+            :initial-title="$note->title"
+            placeholder="Just dump data!!"
+            :status-text="$canEdit ? 'Start Typing' : 'Read only'">
+            <x-slot name="actions">
+                @if($canEdit)
+                <button type="button" class="btn btn-outline-dark btn-sm" data-toggle="modal" data-target="#exampleModal">
+                    <i class="fa fa-key"></i> Password
+                </button>
+                @endif
+                <button type="button" class="btn btn-outline-dark btn-sm copyToClipboard" data-toggle="tooltip" data-placement="top" title="Copy link to clipboard">
+                    <i class="fa fa-copy"></i> <span class="d-none d-md-inline">Copy link to clipboard</span>
+                </button>
+            </x-slot>
+        </x-rich-editor>
+    </form>
+</div>
 
 @if(!$canEdit)
 <div class="alert alert-warning mt-3" role="alert">

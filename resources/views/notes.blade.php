@@ -3,7 +3,7 @@
 @section('stylesheet')
 <style>
     .notes-toolbar {
-        background: linear-gradient(135deg, var(--color-accent-bg) 0%, var(--color-bg-page) 60%, var(--color-bg-subtle) 100%);
+        background: linear-gradient(145deg, var(--color-bg-subtle) 0%, var(--color-bg-page) 55%, var(--color-accent-bg) 100%);
         border: 1px solid var(--color-border);
         border-radius: var(--radius-md);
         padding: 14px;
